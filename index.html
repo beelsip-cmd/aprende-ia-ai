@@ -1,0 +1,917 @@
+<title>Aprende IA aí</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: app shell — sidebar no desktop, tab bar no celular; cada nível é um "semestre" com módulos e aulas */
+:root{
+  --ink:#09070A; --surface:#171015; --raise:#24151E; --line:#40232F;
+  --text:#FFF1F5; --muted:#C3A6B3; --dim:#90717F;
+  --pink:#B92D67; --pink-soft:rgba(185,45,103,.17);
+  --green:#F04455; --green-soft:rgba(240,68,85,.14);
+  --display:"Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
+  --body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  --r:14px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--ink);color:var(--text);font-family:var(--body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--ink)}
+a{color:var(--green)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);line-height:1.08;text-wrap:balance;margin:0;letter-spacing:-.01em}
+.mono{font-family:var(--mono)}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100%}
+.side{position:sticky;top:env(safe-area-inset-top,0px);height:100vh;border-right:1px solid var(--line);padding:24px 16px;padding-left:max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:28px;background:var(--ink)}
+.logo{font-family:var(--display);font-weight:800;font-size:24px;line-height:1;letter-spacing:-.02em}
+.logo .ia{color:var(--pink)} .logo .ai{color:var(--green);font-style:italic}
+.logo small{display:block;font-family:var(--mono);font-weight:400;font-size:10px;letter-spacing:.14em;color:var(--dim);margin-top:8px;text-transform:uppercase}
+.nav{display:flex;flex-direction:column;gap:4px}
+.nav a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;color:var(--muted);text-decoration:none;font-weight:600}
+.nav a svg{width:20px;height:20px;flex:none}
+.nav a:hover{background:var(--surface);color:var(--text)}
+.nav a.on{background:var(--pink-soft);color:var(--pink)}
+.side .me{margin-top:auto;border-top:1px solid var(--line);padding-top:16px;display:flex;flex-direction:column;gap:8px}
+.xpbar{height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--pink),var(--green));border-radius:99px;transition:width .6s}
+
+main{min-width:0;padding-block:32px 96px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:32px}
+
+/* home */
+.hero{display:grid;grid-template-columns:1.4fr 1fr;gap:20px}
+.hello{padding:28px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line);position:relative;overflow:hidden;display:flex;flex-direction:column;gap:16px}
+.hello h1{font-size:clamp(30px,5vw,48px);font-weight:800}
+.hello h1 em{font-style:normal;color:var(--pink)}
+.hello p{color:var(--muted);max-width:52ch;margin:0}
+.hello::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;border:28px solid var(--green);opacity:.09}
+.namefield{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.namefield input{background:var(--ink);border:1px solid var(--line);border-radius:10px;padding:9px 12px;color:var(--text);font:inherit;min-width:0;flex:1 1 180px}
+.rankcard{padding:24px;border-radius:var(--r);background:var(--pink);color:var(--ink);display:flex;flex-direction:column;gap:12px}
+.rankcard .rank{font-family:var(--display);font-weight:800;font-size:34px;line-height:1}
+.rankcard .eyebrow{color:rgba(10,9,11,.65)}
+.rankcard .xpbar{background:rgba(10,9,11,.2)} .rankcard .xpbar i{background:var(--ink)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:auto}
+.stats div{background:rgba(10,9,11,.1);border-radius:10px;padding:10px}
+.stats b{display:block;font-family:var(--display);font-size:22px;font-variant-numeric:tabular-nums}
+.stats span{font-size:12px;font-weight:600}
+
+.next{display:flex;gap:20px;align-items:center;padding:20px 24px;border-radius:var(--r);border:1px solid var(--green);background:var(--green-soft);flex-wrap:wrap}
+.next .t{flex:1 1 260px;min-width:0}
+.next h3{font-size:22px;margin-top:4px}
+.btn{border:0;border-radius:99px;padding:11px 20px;font-weight:700;background:var(--green);color:var(--ink);display:inline-flex;gap:8px;align-items:center;text-decoration:none;white-space:nowrap}
+.btn.pink{background:var(--pink);color:var(--ink)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}
+.btn.sm{padding:7px 14px;font-size:13px}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+
+.sec-h{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap}
+.sec-h h2{font-size:26px}
+.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.lv{padding:22px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column;gap:12px;text-align:left}
+.lv:hover:not(.locked){border-color:var(--muted)}
+.lv .num{font-family:var(--display);font-weight:800;font-size:56px;line-height:.9;color:var(--line)}
+.lv.cur .num{color:var(--pink)} .lv.done .num{color:var(--green)}
+.lv h3{font-size:22px}
+.lv p{margin:0;color:var(--muted);font-size:14px}
+.lv .meta{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:auto}
+.lv.locked{opacity:.5}
+.chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:99px;border:1px solid var(--line);color:var(--muted);width:fit-content}
+.chip.g{border-color:var(--green);color:var(--green)} .chip.p{border-color:var(--pink);color:var(--pink)}
+
+/* trilha */
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tabs button{border:1px solid var(--line);background:transparent;border-radius:99px;padding:8px 16px;font-weight:600;color:var(--muted)}
+.tabs button.on{background:var(--text);color:var(--ink);border-color:var(--text)}
+.lvhead{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:end}
+.lvhead h1{font-size:clamp(32px,5vw,52px);font-weight:800}
+.lvhead p{color:var(--muted);margin:8px 0 0;max-width:60ch}
+.mods{display:flex;flex-direction:column;gap:14px}
+.mod{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);overflow:hidden}
+.mod-h{display:flex;gap:16px;align-items:center;padding:18px 20px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.mod-h .ico{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--raise);flex:none}
+.mod-h .ico svg{width:22px;height:22px;stroke:var(--pink)}
+.mod.complete .mod-h .ico{background:var(--green-soft)} .mod.complete .mod-h .ico svg{stroke:var(--green)}
+.mod-h .t{flex:1 1 200px;min-width:0}
+.mod-h h3{font-size:19px}
+.mod-h .sub{font-size:13px;color:var(--muted)}
+.lessons{list-style:none;margin:0;padding:6px}
+.lessons button{width:100%;display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;padding:12px 14px;border:0;background:transparent;border-radius:10px;text-align:left}
+.lessons button:hover:not(:disabled){background:var(--raise)}
+.lessons button:disabled{cursor:not-allowed;opacity:.45}
+.dot{width:24px;height:24px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center}
+.dot.ok{background:var(--green);border-color:var(--green)}
+.dot.ok svg{width:14px;height:14px;stroke:var(--ink)}
+.lessons .min{font-family:var(--mono);font-size:12px;color:var(--dim)}
+
+/* aula */
+.lesson{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:28px;align-items:start}
+.crumb{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.lesson h1{font-size:clamp(28px,4.5vw,44px);font-weight:800;margin-top:12px}
+.content{display:flex;flex-direction:column;gap:16px;max-width:68ch;font-size:16.5px}
+.content p{margin:0}
+.content ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.content li{padding-left:22px;position:relative}
+.content li::before{content:"";position:absolute;left:2px;top:.6em;width:8px;height:8px;border-radius:2px;background:var(--pink);transform:rotate(45deg)}
+.content li b{color:var(--text)}
+.tip{border-left:3px solid var(--green);background:var(--green-soft);padding:14px 16px;border-radius:0 10px 10px 0;font-size:15px}
+.tip::before{content:"Na real";display:block;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:4px}
+.ex{font-family:var(--mono);font-size:13.5px;background:var(--raise);border:1px solid var(--line);border-radius:10px;padding:14px 16px;white-space:pre-wrap;overflow-wrap:anywhere}
+.box{border:1px solid var(--line);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:12px;background:var(--surface)}
+.box h3{font-size:20px}
+.prompt{font-family:var(--mono);font-size:13.5px;line-height:1.6;background:var(--ink);border:1px dashed var(--pink);border-radius:10px;padding:16px;white-space:pre-wrap;overflow-wrap:anywhere;color:#FFD7E6}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{border:1px solid var(--line);background:var(--ink);border-radius:10px;padding:12px 14px;text-align:left;font-weight:500}
+.opt:hover:not(:disabled){border-color:var(--muted)}
+.opt.right{border-color:var(--green);background:var(--green-soft);color:var(--green)}
+.opt.wrong{border-color:var(--pink);background:var(--pink-soft);color:var(--pink)}
+.opt:disabled{cursor:default}
+.feedback{font-size:14px;color:var(--muted)}
+.aside{position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);display:flex;flex-direction:column;gap:14px}
+.aside .box{gap:10px}
+.mini{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.mini button{width:100%;text-align:left;background:transparent;border:0;padding:8px 10px;border-radius:8px;font-size:14px;color:var(--muted);display:flex;gap:10px;align-items:center}
+.mini button.on{background:var(--raise);color:var(--text)}
+.mini button:disabled{opacity:.4;cursor:not-allowed}
+.mini .d{width:8px;height:8px;border-radius:50%;background:var(--line);flex:none}
+.mini .d.ok{background:var(--green)}
+
+/* lab */
+.lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+.fields{display:flex;flex-direction:column;gap:14px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-weight:600;font-size:14px}
+.field small{color:var(--dim);font-size:12px}
+.field input,.field select,.field textarea{background:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--text);font:inherit;width:100%}
+.field textarea{min-height:70px;resize:vertical}
+.tpls{display:flex;gap:6px;flex-wrap:wrap}
+.tpls button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:600;color:var(--muted)}
+.tpls button.on{border-color:var(--pink);color:var(--pink);background:var(--pink-soft)}
+.score{display:flex;gap:6px;flex-wrap:wrap}
+
+/* recursos */
+.res{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.rescard{border:1px solid var(--line);border-radius:var(--r);padding:18px;background:var(--surface);display:flex;flex-direction:column;gap:8px;min-width:0}
+.rescard h3{font-size:17px;font-family:var(--body);font-weight:700;letter-spacing:0}
+.rescard p{margin:0;color:var(--muted);font-size:14px}
+.rescard a{margin-top:auto;font-weight:600;font-size:14px;text-decoration:none;overflow-wrap:anywhere}
+.plan{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.week{border-top:3px solid var(--pink);background:var(--surface);border-radius:0 0 var(--r) var(--r);padding:16px;display:flex;flex-direction:column;gap:8px}
+.week:nth-child(even){border-color:var(--green)}
+.week h3{font-size:17px}
+.week p{margin:0;font-size:14px;color:var(--muted)}
+.week b{font-size:13px}
+
+/* conquistas */
+.badges{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.badge{border:1px solid var(--line);border-radius:var(--r);padding:18px 14px;background:var(--surface);display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px}
+.medal{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--raise);border:2px dashed var(--line)}
+.medal svg{width:28px;height:28px;stroke:var(--dim)}
+.badge.got .medal{background:conic-gradient(var(--pink),var(--green),var(--pink));border:0;padding:3px}
+.badge.got .medal span{width:100%;height:100%;border-radius:50%;background:var(--ink);display:grid;place-items:center}
+.badge.got .medal svg{stroke:var(--green)}
+.badge b{font-size:14px}
+.badge small{color:var(--muted);font-size:12px;line-height:1.35}
+.badge:not(.got) b{color:var(--muted)}
+.certs{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.certrow{border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;gap:16px;align-items:center;background:var(--surface);flex-wrap:wrap}
+.certrow .t{flex:1 1 180px;min-width:0}
+.certrow h3{font-size:17px}
+.certrow p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+
+/* certificado */
+.overlay{position:fixed;inset:0;background:rgba(10,9,11,.86);z-index:40;display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));overflow:auto}
+.cert-wrap{width:min(860px,100%);display:flex;flex-direction:column;gap:12px}
+.cert{aspect-ratio:1.414/1;max-width:100%;background:#0E0C0F;border-radius:6px;position:relative;padding:4.5%;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;border:1px solid var(--line)}
+.cert::before{content:"";position:absolute;inset:2.2%;border:1px solid rgba(185,45,103,.65);border-radius:4px;pointer-events:none}
+.cert::after{content:"";position:absolute;width:42%;aspect-ratio:1;right:-12%;bottom:-22%;border-radius:50%;border:clamp(10px,3vw,30px) solid var(--green);opacity:.12}
+.cert .top{display:flex;justify-content:space-between;align-items:start;gap:12px;position:relative;z-index:1}
+.cert .logo{font-size:clamp(14px,2.6vw,24px)}
+.cert .kind{font-family:var(--mono);font-size:clamp(8px,1.2vw,11px);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);text-align:right}
+.cert .mid{position:relative;z-index:1;display:flex;flex-direction:column;gap:clamp(4px,1vw,10px)}
+.cert .lbl{font-size:clamp(10px,1.5vw,14px);color:var(--muted)}
+.cert .who{font-family:var(--display);font-weight:800;font-size:clamp(22px,5.4vw,52px);line-height:1;color:var(--text);overflow-wrap:anywhere}
+.cert .what{font-size:clamp(10px,1.7vw,16px);max-width:60ch}
+.cert .what b{color:var(--pink)}
+.cert .bot{display:flex;justify-content:space-between;align-items:end;gap:12px;position:relative;z-index:1;font-family:var(--mono);font-size:clamp(7px,1.1vw,11px);color:var(--muted)}
+.cert .sig{border-top:1px solid var(--muted);padding-top:6px;min-width:30%}
+.cert .seal{width:clamp(48px,10vw,96px);aspect-ratio:1;border-radius:50%;background:var(--green);color:var(--ink);display:grid;place-items:center;text-align:center;font-family:var(--display);font-weight:800;font-size:clamp(7px,1.2vw,12px);line-height:1.05;transform:rotate(-10deg)}
+
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--ink);padding:12px 18px;border-radius:12px;font-weight:700;opacity:0;transition:.3s;z-index:50;max-width:calc(100% - 32px);text-align:center;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+
+.tabbar{display:none}
+
+@media (max-width:900px){
+  .app{grid-template-columns:1fr}
+  .side{display:none}
+  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(10,9,11,.96);border-top:1px solid var(--line);padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px));justify-content:space-around}
+  .tabbar a{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:600;color:var(--dim);text-decoration:none;padding:6px 8px;border-radius:10px}
+  .tabbar a svg{width:22px;height:22px}
+  .tabbar a.on{color:var(--pink)}
+  .mobilelogo{display:block!important}
+  main{padding-block:20px 110px}
+  .hero,.levels,.lesson,.lab,.res,.certs{grid-template-columns:1fr}
+  .plan{grid-template-columns:repeat(2,1fr)}
+  .badges{grid-template-columns:repeat(2,1fr)}
+  .aside{position:static}
+  .lvhead{grid-template-columns:1fr}
+}
+@media (max-width:480px){.plan{grid-template-columns:1fr}}
+.mobilelogo{display:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* Impressão isolada do certificado: habilite gráficos de fundo no diálogo do navegador. */
+@media print {
+ @page{size:A4 landscape;margin:8mm}
+ html,body{background:#0E0C0F!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ body>*:not(#modal){display:none!important}
+ #modal,.overlay{position:static!important;display:block!important;overflow:visible!important;background:transparent!important;padding:0!important}
+ .cert-wrap{width:100%!important;max-width:none!important;display:block!important}
+ .cert{width:100%!important;max-width:none!important;aspect-ratio:1.414/1!important;break-inside:avoid!important}
+ .cert-wrap>.row,.cert-wrap>.tip{display:none!important}
+}
+</style>
+
+<style>
+#authGate{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 75% 15%,#55132d 0,transparent 38%),#09070a;color:#f9edf2;font-family:Figtree,system-ui}
+.auth-card{width:min(440px,100%);background:#191015;border:1px solid #492132;border-radius:20px;padding:32px;display:grid;gap:15px}
+.auth-card h1{font-size:34px}.auth-card p{color:#d0aebb;margin:0}.auth-card input{width:100%;padding:13px;background:#0e090c;border:1px solid #69344b;border-radius:10px;color:white;font:inherit}
+.auth-card button{background:#ef4357;border:0;color:white;border-radius:10px;padding:12px;font-weight:700}.auth-card button.alt{background:transparent;border:1px solid #69344b}.auth-card button:disabled{opacity:.5}
+#authError{color:#ff98a6;font-size:13px;min-height:18px}#logout{margin-top:10px}
+</style>
+<div id="authGate"><div class="auth-card"><div class="logo">Aprende <span class="ia">IA</span> aí</div><h1 id="authTitle">Entre na sua escola</h1><p>Aprenda IA aplicada ao marketing no seu ritmo.</p><form id="authForm" style="display:grid;gap:12px"><input id="authName" placeholder="Seu nome" autocomplete="name" style="display:none"><input id="authEmail" type="email" required placeholder="Seu e-mail" autocomplete="email"><input id="authPassword" type="password" required minlength="8" placeholder="Senha (mínimo 8 caracteres)" autocomplete="current-password"><button id="authSubmit">Entrar</button></form><div id="authError" role="status"></div><button class="alt" id="authToggle">Criar uma conta</button><button class="alt" id="authReset">Esqueci minha senha</button><small style="color:#a98695">Seu progresso será vinculado à sua conta.</small></div></div>
+<div class="app" id="studentApp" style="display:none">
+  <aside class="side">
+    <div class="logo">Aprende <span class="ia">IA</span> <span class="ai">aí</span><small>Escola de IA no marketing</small></div>
+    <nav class="nav" id="nav"></nav>
+    <div class="me" id="sideMe"></div>
+  </aside>
+  <main><div class="wrap" id="view"></div></main>
+</div>
+<nav class="tabbar" id="tabbar" style="display:none"></nav>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div id="modal"></div>
+
+<script>
+/* ============ ÍCONES ============ */
+const I={
+home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+path:'<circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 18H15a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h6.5"/>',
+lab:'<path d="M9 3h6M10 3v6L4.5 18.5A1.7 1.7 0 0 0 6 21h12a1.7 1.7 0 0 0 1.5-2.5L14 9V3"/><path d="M7 15h10"/>',
+book:'<path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/>',
+trophy:'<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M16 5h3v2a3 3 0 0 1-3 3M8 5H5v2a3 3 0 0 0 3 3M12 13v4M8 21h8M9 17h6"/>',
+spark:'<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/>',
+type:'<path d="M4 7V4h16v3M9 20h6M12 4v16"/>',
+pen:'<path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/>',
+image:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/>',
+video:'<rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/>',
+target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+megaphone:'<path d="M3 10v4h4l7 5V5L7 10z"/><path d="M18 9a4 4 0 0 1 0 6"/>',
+flow:'<rect x="3" y="3" width="6" height="6" rx="1"/><rect x="15" y="15" width="6" height="6" rx="1"/><path d="M6 9v4a2 2 0 0 0 2 2h7"/>',
+chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+flag:'<path d="M5 21V4M5 4h12l-2 4 2 4H5"/>',
+check:'<path d="M5 12l5 5 9-10"/>',
+lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>',
+arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+fire:'<path d="M12 21a6 6 0 0 0 6-6c0-4-3-6-4-10-2 2-3 4-3 6-1-1-2-2-2-4-2 2-3 5-3 8a6 6 0 0 0 6 6z"/>',
+star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+};
+const svg=(k,extra='')=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ${extra}>${I[k]}</svg>`;
+
+/* ============ CURRÍCULO ============
+   Linhas do corpo: "- " = item de lista · "! " = destaque · "> " = exemplo · resto = parágrafo */
+const LEVELS=[
+{id:'n1',num:'01',name:'Introdutório',tagline:'Fundamentos',hours:8,
+ desc:'Entenda o que a IA faz, monte seus primeiros prompts e produza a primeira copy e a primeira imagem com qualidade de publicação.',
+ cert:'Fundamentos de IA no Marketing',
+ modules:[
+ {id:'m1',title:'Fundamentos de IA',icon:'spark',badge:'Primeiro Contato',bdesc:'Concluiu Fundamentos de IA',lessons:[
+  {id:'l1',title:'O que é IA generativa, sem complicar',min:8,body:[
+   'IA generativa são modelos treinados com enormes volumes de texto, imagem, áudio e vídeo. Eles aprendem padrões e produzem conteúdo novo a partir de uma instrução escrita: o prompt.',
+   '- <b>Modelos de linguagem (LLMs)</b> preveem a próxima palavra. Exemplos: ChatGPT, Claude, Gemini.',
+   '- <b>Modelos de imagem</b> transformam texto em imagem. Exemplos: Midjourney, Adobe Firefly, Ideogram, Imagen.',
+   '- <b>Modelos de vídeo</b> geram ou animam cenas. Exemplos: Runway, Veo, Kling.',
+   '- <b>Modelos de voz</b> criam narração e dublagem. Exemplo: ElevenLabs.',
+   'Para o marketing, isso significa tirar do caminho o trabalho braçal: rascunhos, variações, pesquisa inicial, adaptações de formato. O que continua sendo seu é a estratégia, o critério e a revisão.',
+   '! A IA não "sabe", ela prevê. Por isso pode inventar números, nomes e citações com total confiança. Isso se chama alucinação. Todo dado precisa ser conferido antes de publicar.'],
+   practice:'Explique para um dono de pequena loja, em 5 frases simples, como a IA generativa pode ajudar no marketing dele. Depois liste 3 tarefas concretas que ele pode delegar para a IA ainda hoje.',
+   quiz:{q:'O que é "alucinação" em IA?',o:['Quando a IA trava e para de responder','Quando a IA gera informação falsa com aparência de verdade','Quando a IA cria imagens surreais de propósito','Quando o prompt é longo demais'],a:1,e:'A IA prevê a resposta mais provável, e às vezes o mais provável é inventado. Por isso, sempre confira dados.'}},
+  {id:'l2',title:'O mapa de ferramentas do marketer',min:10,body:[
+   'Não existe ferramenta perfeita. Existe a ferramenta certa para cada etapa do trabalho.',
+   '- <b>Texto, pesquisa e estratégia:</b> ChatGPT, Claude, Gemini.',
+   '- <b>Imagem:</b> Midjourney (estética), Adobe Firefly (uso comercial seguro), Ideogram (texto dentro da imagem), Canva IA (rapidez).',
+   '- <b>Vídeo:</b> Runway, Kling, Veo, CapCut para edição.',
+   '- <b>Voz e áudio:</b> ElevenLabs.',
+   '- <b>Automação:</b> n8n, Make, Zapier.',
+   '! Ferramentas mudam todo mês. Aprenda o processo: briefing → geração → avaliação → ajuste. Ele funciona em qualquer ferramenta.'],
+   practice:'Monte uma tabela com as etapas de produção de um post para Instagram (pesquisa, ideia, copy, imagem, legenda, agendamento, análise) e indique, para cada etapa, que tipo de ferramenta de IA ajuda e como.',
+   quiz:{q:'Qual aprendizado dura mais tempo?',o:['Decorar os botões de cada ferramenta','O processo de briefing, geração, avaliação e ajuste','Usar sempre a ferramenta mais cara','Trocar de ferramenta toda semana'],a:1,e:'O processo é o mesmo em qualquer ferramenta. A interface muda; o critério fica.'}},
+  {id:'l3',title:'Ética, direitos e LGPD',min:8,body:[
+   'Usar IA não muda as regras do jogo. Publicidade continua sujeita ao Código de Defesa do Consumidor, à LGPD e às políticas das plataformas.',
+   '- Nunca coloque dados pessoais de clientes (CPF, telefone, e-mail) em ferramentas públicas.',
+   '- Imagem de pessoas reais e marcas de terceiros exige autorização.',
+   '- Não crie depoimentos falsos nem prometa o que o produto não entrega.',
+   '- Afirmações de saúde, finanças e resultados garantidos podem reprovar anúncios e gerar processo.',
+   '- Seja transparente quando rostos ou vozes forem 100% gerados.',
+   '! Regra prática: se você não publicaria aquilo assinado com seu nome, não publique só porque a IA gerou.'],
+   practice:'Revise o texto de anúncio abaixo. Aponte promessas exageradas, riscos legais (CDC, LGPD) e trechos que podem reprovar nas políticas do Meta Ads. Depois reescreva uma versão segura mantendo a força persuasiva.\n\nTexto: [cole aqui]',
+   quiz:{q:'Qual informação NÃO deve ir para uma ferramenta pública de IA?',o:['O tom de voz da marca','A lista de clientes com telefone e CPF','O objetivo da campanha','Exemplos de posts antigos'],a:1,e:'Dados pessoais de clientes são protegidos pela LGPD. Anonimize antes de analisar.'}}
+ ]},
+ {id:'m2',title:'Prompt essencial',icon:'type',badge:'Arquiteto de Prompts',bdesc:'Dominou a estrutura de um bom prompt',lessons:[
+  {id:'l4',title:'Anatomia de um prompt: o método PCTFR',min:12,body:[
+   'Prompt fraco gera resposta genérica. Um bom prompt tem cinco partes:',
+   '- <b>Papel:</b> quem a IA deve ser. "Você é um copywriter de e-commerce com 10 anos de experiência."',
+   '- <b>Contexto:</b> produto, público, momento, dados, o que já foi testado.',
+   '- <b>Tarefa:</b> o que fazer, com um verbo claro. "Crie", "Analise", "Compare".',
+   '- <b>Formato:</b> tamanho, estrutura, quantidade de opções, tabela ou lista.',
+   '- <b>Restrições:</b> o que evitar, tom, palavras proibidas, limite de caracteres.',
+   '> Ruim: "Faz um post sobre meu curso"\n\nBom: "Você é social media de uma escola online. Contexto: curso de Excel para analistas iniciantes, R$ 297, público de 22 a 35 anos que quer promoção. Tarefa: crie 3 legendas para Instagram. Formato: até 120 palavras, primeira linha como gancho, CTA para link na bio. Restrições: sem emoji em excesso, sem a palavra \'incrível\'."'],
+   practice:'Você é [papel].\nContexto: [produto, público, preço, diferencial].\nTarefa: [o que você quer].\nFormato: [tamanho, estrutura, quantidade].\nRestrições: [o que evitar].',
+   quiz:{q:'Qual parte do prompt define "tabela com 3 colunas, máximo 10 linhas"?',o:['Papel','Contexto','Formato','Restrições'],a:2,e:'Formato é a forma da entrega: tamanho, estrutura e quantidade.'}},
+  {id:'l5',title:'Iterar: a primeira resposta é rascunho',min:8,body:[
+   'Quem usa bem IA conversa com ela. A primeira resposta é o ponto de partida.',
+   '- <b>Peça volume:</b> "Me dê 10 opções de ângulos diferentes."',
+   '- <b>Dê feedback específico:</b> "A 3 está boa, mas deixe mais curta e sem emoji."',
+   '- <b>Faça a IA perguntar:</b> "Antes de responder, me faça 5 perguntas sobre o negócio."',
+   '- <b>Peça autocrítica:</b> "Dê nota de 0 a 10 em clareza e persuasão e reescreva o que ficou abaixo de 8."',
+   '- <b>Mostre exemplos (few-shot):</b> cole 2 posts que performaram bem e peça no mesmo estilo.',
+   '! Feedback vago ("melhora isso") gera mudança vaga. Diga exatamente o que mudar.'],
+   practice:'Antes de escrever qualquer coisa, me faça 5 perguntas sobre meu negócio, meu público e meu objetivo. Depois que eu responder, crie 3 ideias de conteúdo e explique por que cada uma deve funcionar.',
+   quiz:{q:'Como se chama a técnica de mostrar exemplos para a IA seguir o estilo?',o:['Few-shot','Zero-click','Fine-tuning','Prompt reverso'],a:0,e:'Few-shot é dar poucos exemplos no próprio prompt. É a forma mais rápida de acertar o estilo.'}},
+  {id:'l6',title:'Sua biblioteca de prompts',min:10,body:[
+   'Profissional não escreve do zero toda vez. Organize prompts testados por tarefa, com as partes variáveis entre colchetes.',
+   '- Pesquisa de público e dores',
+   '- Ideias de pauta e calendário',
+   '- Copy de anúncio e legenda',
+   '- Roteiro de reels',
+   '- Briefing de imagem e vídeo',
+   '- Análise de métricas e relatório',
+   '! Guarde junto do prompt o resultado que ele gerou e o ajuste que você fez. É assim que a biblioteca melhora com o tempo. O Laboratório deste app já traz modelos prontos.'],
+   practice:'Crie para mim uma biblioteca com 8 prompts de marketing reutilizáveis, um para cada tarefa: pesquisa de público, ideias de pauta, headline, legenda, roteiro de reels, prompt de imagem, copy de anúncio e análise de métricas. Use [colchetes] nas partes variáveis.',
+   quiz:{q:'Para que servem os [colchetes] nos prompts salvos?',o:['Deixam o prompt mais bonito','Marcam as partes que mudam a cada uso','São obrigatórios na IA','Aumentam o limite de caracteres'],a:1,e:'Os colchetes mostram o que você precisa preencher. O resto do prompt já está testado.'}}
+ ]},
+ {id:'m3',title:'Primeira copy',icon:'pen',badge:'Primeira Palavra',bdesc:'Escreveu as primeiras copys com IA',lessons:[
+  {id:'l7',title:'Headlines que param o scroll',min:10,body:[
+   'A headline decide se o resto será lido. Cinco gatilhos que funcionam em qualquer nicho:',
+   '- <b>Número + benefício:</b> "7 erros que travam suas vendas na Amazon"',
+   '- <b>Pergunta que dói:</b> "Seu anúncio tem clique e não tem venda?"',
+   '- <b>Curiosidade:</b> "O ajuste de 2 minutos que dobrou nosso CTR"',
+   '- <b>Contraste:</b> "De 3 vendas por mês para 3 por dia"',
+   '- <b>Prova:</b> "Como uma loja de bairro faturou R$ 40 mil no Instagram"',
+   '! A IA adora clichês: "descubra", "transforme", "incrível", "revolucionário". Proíba essas palavras no prompt.'],
+   practice:'Crie 15 headlines para [produto] voltado a [público], usando 5 gatilhos (número, pergunta, curiosidade, contraste e prova), 3 de cada. Proibido usar: descubra, transforme, incrível, revolucionário, segredo.',
+   quiz:{q:'Por que proibir palavras no prompt?',o:['Para economizar tokens','Para fugir dos clichês que a IA usa demais','Porque a IA não entende essas palavras','Para o texto ficar mais longo'],a:1,e:'Sem restrição, a IA volta para o vocabulário mais comum, e o mais comum é o que o público já ignora.'}},
+  {id:'l8',title:'Legendas para cada rede',min:8,body:[
+   '- <b>Primeira linha:</b> gancho. Ela aparece antes do "mais".',
+   '- <b>Corpo:</b> uma ideia só, frases curtas, espaço entre blocos.',
+   '- <b>CTA:</b> uma ação clara: salvar, comentar, clicar.',
+   '- <b>Instagram:</b> visual e direto. <b>LinkedIn:</b> argumento e opinião. <b>TikTok:</b> curto, a legenda apoia o vídeo.',
+   '! Peça para a IA adaptar a mesma ideia para cada rede em vez de copiar e colar o mesmo texto.'],
+   practice:'Transforme este tema em 3 legendas:\n1. Instagram: até 150 palavras, gancho forte, CTA para salvar.\n2. LinkedIn: tom profissional, 1 insight e 1 pergunta no final.\n3. TikTok: até 40 palavras.\n\nTema: [tema]',
+   quiz:{q:'O que a primeira linha de uma legenda precisa fazer?',o:['Apresentar a empresa','Prender a atenção','Listar hashtags','Ter o link'],a:1,e:'A primeira linha é a única garantida de ser vista. Ela vende o clique em "mais".'}}
+ ]},
+ {id:'m4',title:'Primeira imagem',icon:'image',badge:'Olho Criativo',bdesc:'Gerou imagens prontas para publicar',lessons:[
+  {id:'l9',title:'Como descrever uma imagem',min:12,body:[
+   'Prompt de imagem é direção de arte por escrito. Use a fórmula: <b>Sujeito + Ação + Cenário + Estilo + Luz + Enquadramento + Proporção</b>.',
+   '> Ruim: "foto de café"\n\nBom: "Xícara de café expresso fumegante sobre balcão de madeira escura, cafeteria minimalista, luz natural lateral de manhã, close-up em 45 graus, fundo desfocado, fotografia de produto, tons quentes, proporção 4:5"',
+   '- <b>1:1</b> feed quadrado · <b>4:5</b> feed vertical · <b>9:16</b> stories e reels · <b>16:9</b> YouTube e banners',
+   '- Termos de câmera ajudam: close-up, plano aberto, vista de cima (flat lay), lente 50mm, profundidade de campo rasa.',
+   '! Descreva o que você quer ver, não o que não quer. "Fundo limpo e branco" funciona melhor que "sem bagunça".'],
+   practice:'Fotografia de produto de [produto], sobre [superfície], em [cenário], luz [tipo de luz], enquadramento [close-up / plano médio / flat lay], estilo [minimalista / editorial / lifestyle], paleta [cores], proporção 4:5.',
+   quiz:{q:'Qual proporção é ideal para Stories e Reels?',o:['1:1','4:5','9:16','16:9'],a:2,e:'9:16 ocupa a tela inteira do celular na vertical.'}},
+  {id:'l10',title:'Do gerado ao publicável',min:10,body:[
+   'Imagem gerada raramente sai pronta. O fluxo profissional:',
+   '- Gere várias opções e escolha a melhor base.',
+   '- Use edição generativa (Canva, Firefly) para remover ou trocar elementos.',
+   '- Aplique textos, fontes e cores da marca em uma ferramenta de design. Texto gerado dentro da imagem costuma sair errado.',
+   '- Faça upscale antes de publicar.',
+   '- Confira mãos, rostos, letras, logos e proporções do produto.',
+   '! Se é anúncio de produto físico, o produto precisa ser o real. Use foto do produto como referência ou componha por cima.'],
+   practice:'Crie 5 prompts de imagem para um post de [produto], cada um em um estilo: fotografia de produto em estúdio, flat lay, lifestyle com pessoa usando, ilustração 3D e minimalista com bastante espaço vazio para texto.',
+   quiz:{q:'Onde é mais seguro colocar o texto da arte?',o:['Sempre pedir para a IA escrever dentro da imagem','Depois, em uma ferramenta de design, com a fonte da marca','Nunca usar texto','No nome do arquivo'],a:1,e:'Ferramentas de design garantem ortografia, fonte e cor da marca.'}}
+ ]}
+]},
+{id:'n2',num:'02',name:'Intermediário',tagline:'Produção',hours:12,
+ desc:'Produza em escala: copy com frameworks, voz de marca, visual consistente, vídeo com IA e estratégia de conteúdo.',
+ cert:'Produção de Conteúdo com IA',
+ modules:[
+ {id:'m5',title:'Copywriting com IA',icon:'pen',badge:'Copy Afiada',bdesc:'Usa frameworks e voz de marca',lessons:[
+  {id:'l11',title:'Frameworks: AIDA, PAS, 4Ps e BAB',min:12,body:[
+   'Frameworks dão estrutura para a IA não escrever "no vazio".',
+   '- <b>AIDA:</b> Atenção, Interesse, Desejo, Ação. Bom para páginas e e-mails.',
+   '- <b>PAS:</b> Problema, Agitação, Solução. Muito forte em anúncios curtos.',
+   '- <b>4Ps:</b> Promessa, Imagem (Picture), Prova, Proposta.',
+   '- <b>BAB:</b> Before, After, Bridge. Antes, depois e o que leva de um ao outro.',
+   '! Peça a mesma oferta em 3 frameworks e teste os 3 no anúncio. O público escolhe, não você.'],
+   practice:'Escreva o texto principal de um anúncio para [produto/oferta] em 3 versões: AIDA, PAS e BAB. Público: [público]. Cada versão com até 90 palavras e o mesmo CTA: [CTA].',
+   quiz:{q:'O que significa PAS?',o:['Preço, Anúncio, Social','Problema, Agitação, Solução','Público, Alcance, Segmentação','Promessa, Ação, Sucesso'],a:1,e:'PAS apresenta a dor, intensifica e entrega a solução.'}},
+  {id:'l12',title:'Guia de voz da marca',min:10,body:[
+   'Sem guia de voz, cada texto da IA soa diferente. Crie um documento curto e use no início de toda conversa, ou salve em um Projeto ou GPT personalizado.',
+   '- 3 adjetivos da marca e o que ela NÃO é (ex.: "direta, mas nunca grossa").',
+   '- Palavras que usamos e palavras proibidas.',
+   '- Nível de formalidade, uso de emoji, gírias.',
+   '- 3 textos aprovados como referência.',
+   '! Depois de pronto, teste: peça um texto com e sem o guia e compare.'],
+   practice:'Analise estes 3 textos da minha marca e crie um guia de voz com: personalidade (3 adjetivos e o oposto de cada), tom, vocabulário que usamos, vocabulário proibido, estrutura típica dos textos e 5 regras práticas.\n\nTextos: [cole aqui]',
+   quiz:{q:'Qual a melhor forma de manter o tom consistente?',o:['Usar sempre a mesma ferramenta','Um guia de voz usado em toda conversa ou projeto','Escrever tudo em maiúsculas','Pedir "seja consistente"'],a:1,e:'A IA não lembra da sua marca sozinha. O guia é a memória dela.'}},
+  {id:'l13',title:'Variações para teste A/B',min:8,body:[
+   '- Mude <b>um elemento por vez:</b> gancho, ângulo, oferta ou CTA.',
+   '- Ângulos clássicos: dor, desejo, prova social, urgência, quebra de objeção, autoridade.',
+   '- Nomeie as variações (A1-dor, A2-prova) para ler fácil nos relatórios.',
+   '! IA deixa barato produzir variação. O gargalo vira a leitura dos resultados, então organize os nomes desde o início.'],
+   practice:'Crie 6 variações de texto para anúncio de [produto], uma para cada ângulo: dor, desejo, prova social, urgência, quebra de objeção e autoridade. Mantenha a mesma oferta e o mesmo CTA. Nomeie cada uma como V1-dor, V2-desejo etc.',
+   quiz:{q:'Num teste A/B limpo, você muda:',o:['Tudo de uma vez','Um elemento por vez','Só a cor','Nada'],a:1,e:'Mudando uma coisa só, você sabe o que causou a diferença.'}}
+ ]},
+ {id:'m6',title:'Visual de campanha',icon:'image',badge:'Diretor de Arte',bdesc:'Cria visuais consistentes de campanha',lessons:[
+  {id:'l14',title:'Consistência visual com IA',min:12,body:[
+   'Campanha boa parece uma família de peças, não imagens soltas.',
+   '- Use <b>imagem de referência</b> de estilo nas ferramentas que aceitam.',
+   '- Crie um <b>bloco de estilo</b> fixo e cole no fim de todo prompt.',
+   '- Cite a paleta pelo nome das cores ou código.',
+   '- Use <b>referência de personagem</b> para mascotes e modelos recorrentes.',
+   '- Salve as configurações que funcionaram.',
+   '> Bloco de estilo: "fotografia editorial, luz suave de janela, paleta preto, rosa e verde-menta, fundo limpo, granulação leve, contraste médio"'],
+   practice:'Crie um bloco de estilo reutilizável (até 60 palavras) para as imagens da minha marca. Marca: [descrição, público, cores, sensação]. Inclua estilo fotográfico, paleta, iluminação, cenário e o que evitar.',
+   quiz:{q:'O que garante que várias imagens pareçam da mesma campanha?',o:['Gerar todas no mesmo dia','Um bloco de estilo e referências repetidos em todos os prompts','Usar sempre a proporção 1:1','Pedir "mesmo estilo"'],a:1,e:'Consistência vem de repetir as mesmas instruções e referências.'}},
+  {id:'l15',title:'Carrosséis e criativos para anúncio',min:12,body:[
+   '- <b>Carrossel:</b> capa com promessa, uma ideia por slide, último slide com CTA.',
+   '- <b>Estático de anúncio:</b> produto em destaque, benefício em até 6 palavras, contraste alto.',
+   '- A primeira imagem decide o clique.',
+   '- Gere de 5 a 10 criativos e deixe o algoritmo encontrar o vencedor.',
+   '! Carrossel que salva é carrossel que ensina algo aplicável. Pense em "o que a pessoa faz depois de ler".'],
+   practice:'Roteirize um carrossel de 7 slides sobre [tema] para [público]. Slide 1: capa com promessa. Slides 2 a 6: um ponto cada (título + 1 frase). Slide 7: CTA. Para cada slide, sugira também a imagem ou elemento visual.',
+   quiz:{q:'O que o último slide de um carrossel deve ter?',o:['Os créditos da equipe','Uma chamada para ação clara','A mesma imagem da capa','Hashtags'],a:1,e:'Quem chegou ao fim está engajado. É a hora de pedir a ação.'}}
+ ]},
+ {id:'m7',title:'Vídeo com IA',icon:'video',badge:'Cineasta IA',bdesc:'Produz vídeos curtos com IA',lessons:[
+  {id:'l16',title:'Roteiro de vídeo curto',min:10,body:[
+   '- <b>0 a 3s:</b> gancho visual e verbal ao mesmo tempo.',
+   '- <b>3 a 15s:</b> desenvolvimento, do problema à solução.',
+   '- <b>15 a 30s:</b> prova ou demonstração.',
+   '- <b>Final:</b> um CTA só.',
+   '- Legenda na tela, porque boa parte do público assiste sem som.',
+   '! Escreva o roteiro em duas colunas: o que aparece e o que se ouve. A IA faz isso muito bem se você pedir.'],
+   practice:'Crie um roteiro de reels de 30 segundos para [produto], em tabela com 3 colunas: tempo, o que aparece na tela, o que é falado/legenda. Comece com um gancho nos 3 primeiros segundos. Me dê 3 opções de gancho diferentes.',
+   quiz:{q:'Quanto tempo você tem para segurar quem está rolando o feed?',o:['30 segundos','10 segundos','Cerca de 3 segundos','1 minuto'],a:2,e:'Os 3 primeiros segundos decidem se o vídeo continua sendo visto. É o que o hook rate mede.'}},
+  {id:'l17',title:'Imagem para vídeo e movimentos de câmera',min:12,body:[
+   'O fluxo mais controlável é gerar a imagem perfeita primeiro e depois animar (image-to-video).',
+   '- <b>Push-in:</b> câmera se aproxima. Cria intensidade.',
+   '- <b>Pull-out:</b> câmera se afasta. Revela contexto.',
+   '- <b>Orbit:</b> gira em volta. Ótimo para produto.',
+   '- <b>Pan / Tilt:</b> percorre a cena na horizontal ou vertical.',
+   '- <b>Handheld:</b> câmera na mão. Sensação de UGC.',
+   '! Descreva também o que se move na cena e a velocidade: "vapor subindo devagar", "cabelo ao vento leve".'],
+   practice:'[imagem do produto] Câmera faz push-in lento até close no logo, vapor subindo devagar, luz quente de fim de tarde, duração 5 segundos, movimento suave e cinematográfico, sem cortes.',
+   quiz:{q:'Qual movimento é mais indicado para mostrar um produto por todos os lados?',o:['Pan','Orbit','Pull-out','Handheld'],a:1,e:'Orbit gira em volta do objeto, como uma vitrine 360°.'}},
+  {id:'l18',title:'Voz, avatares e UGC',min:10,body:[
+   '- <b>Narração sintética:</b> ótima para vídeos explicativos e tutoriais.',
+   '- <b>Dublagem:</b> leva o mesmo vídeo para outros idiomas.',
+   '- <b>Avatares:</b> funcionam em treinamento e explicação. Não use para depoimentos.',
+   '- <b>UGC real + edição com IA</b> ainda ganha de UGC 100% sintético em confiança.',
+   '! Clonar voz ou rosto de alguém só com autorização por escrito.'],
+   practice:'Escreva um roteiro de narração de 45 segundos para um vídeo explicativo sobre [tema], em linguagem falada, frases curtas, com marcações de pausa [pausa] e ênfase em MAIÚSCULAS para a narração por IA.',
+   quiz:{q:'Onde NÃO usar avatar de IA?',o:['Tutorial de produto','Treinamento interno','Depoimento de cliente','Vídeo explicativo'],a:2,e:'Depoimento fabricado engana o consumidor e viola as políticas de anúncio.'}}
+ ]},
+ {id:'m8',title:'Conteúdo e estratégia',icon:'target',badge:'Estrategista',bdesc:'Planeja conteúdo com método',lessons:[
+  {id:'l19',title:'Persona e pesquisa com IA',min:12,body:[
+   '- Cole reviews, comentários e perguntas reais de clientes e peça para a IA agrupar <b>dores, desejos e objeções</b>.',
+   '- Peça a <b>linguagem do cliente:</b> frases exatas que ele usa. Elas viram copy.',
+   '- Analise concorrentes: o que prometem, o que os clientes reclamam deles.',
+   '- Valide com dados reais (pesquisa, CRM, atendimento). A IA organiza, não substitui o cliente.'],
+   practice:'Analise os comentários e avaliações abaixo. Agrupe em: dores, desejos, objeções e dúvidas frequentes. Para cada grupo, traga 3 frases literais dos clientes e uma ideia de conteúdo.\n\nComentários: [cole aqui]',
+   quiz:{q:'Qual a fonte mais valiosa para criar persona com IA?',o:['A imaginação da IA','Comentários, avaliações e conversas reais de clientes','O site do concorrente apenas','Uma persona pronta da internet'],a:1,e:'A IA é ótima para organizar dados reais. Sem eles, ela inventa uma persona genérica.'}},
+  {id:'l20',title:'Calendário editorial com pilares',min:12,body:[
+   '- Defina de 3 a 5 <b>pilares:</b> educar, inspirar, provar, vender, bastidores.',
+   '- Equilibre: a maior parte entrega valor, uma parte cria relação, uma parte pequena vende.',
+   '- <b>Reaproveitamento:</b> um tema grande vira live, 3 reels, 2 carrosséis, 1 e-mail e 5 stories.',
+   '! Peça o calendário em tabela. Fica fácil levar para planilha, Notion ou ferramenta de agendamento.'],
+   practice:'Crie um calendário de 30 dias para [marca] com os pilares [pilar 1, pilar 2, pilar 3, pilar 4], 4 posts por semana. Em tabela: data, pilar, formato (reels, carrossel, estático, stories), tema, gancho e CTA.',
+   quiz:{q:'O que é reaproveitamento de conteúdo?',o:['Postar o mesmo post duas vezes','Transformar um tema em várias peças e formatos','Copiar conteúdo de concorrentes','Apagar posts antigos'],a:1,e:'Um bom tema rende muitas peças. A IA acelera essa adaptação.'}},
+  {id:'l21',title:'SEO e GEO: ser encontrado por buscas e por IAs',min:12,body:[
+   'As pessoas não só buscam no Google: elas perguntam para o ChatGPT, Gemini e Perplexity. Aparecer nessas respostas é o GEO (Generative Engine Optimization).',
+   '- <b>SEO:</b> palavra-chave com intenção clara, título forte, estrutura com subtítulos, resposta direta logo no começo.',
+   '- <b>GEO:</b> IAs citam conteúdo claro, factual, com dados, FAQ e autoridade.',
+   '- Mantenha as informações da marca iguais em site, redes, Google Meu Negócio e diretórios.',
+   '- Escreva no formato pergunta → resposta curta → detalhe.',
+   '! Pergunte às IAs sobre sua marca e seu nicho. O que elas respondem hoje é seu ponto de partida.'],
+   practice:'Para a palavra-chave "[palavra-chave]", crie: 1) intenção de busca, 2) título SEO até 60 caracteres, 3) meta description até 155, 4) estrutura de H2 e H3, 5) um FAQ com 6 perguntas reais que o público faz, com respostas de até 50 palavras.',
+   quiz:{q:'O que é GEO?',o:['Segmentação geográfica de anúncios','Otimização para aparecer em respostas de IAs generativas','Um tipo de pixel','Geolocalização de lojas'],a:1,e:'GEO é deixar seu conteúdo fácil de ser entendido e citado por IAs.'}}
+ ]}
+]},
+{id:'n3',num:'03',name:'Avançado',tagline:'Performance',hours:14,
+ desc:'Leve a IA para tráfego pago, automação, mensuração e entregue um projeto final de campanha completa.',
+ cert:'Performance e Automação com IA',
+ modules:[
+ {id:'m9',title:'Ads com IA',icon:'megaphone',badge:'Mestre do Tráfego',bdesc:'Opera anúncios com IA e dados',lessons:[
+  {id:'l22',title:'Meta Ads na era da IA',min:15,body:[
+   'Com Advantage+ e públicos amplos, o algoritmo decide para quem entregar. O que você controla de verdade é o criativo e o sinal de conversão.',
+   '- <b>O criativo virou a segmentação:</b> cada ângulo atrai um tipo de pessoa.',
+   '- <b>Estrutura simples:</b> menos campanhas, mais criativos por conjunto.',
+   '- <b>Sinal limpo:</b> Pixel + API de Conversões (CAPI) para o algoritmo aprender com vendas reais.',
+   '- <b>Diversidade criativa:</b> formatos, pessoas, cenários e ângulos diferentes, não só cores diferentes.',
+   '! Criativos muito parecidos são tratados como o mesmo anúncio. Varie o conceito, não só o detalhe.'],
+   practice:'Monte um plano de 10 criativos para Meta Ads de [produto], com conceitos realmente diferentes entre si. Para cada um: ângulo, formato (vídeo, estático, carrossel), pessoa/cenário, gancho dos 3 primeiros segundos e texto principal em até 50 palavras.',
+   quiz:{q:'Com público amplo no Meta, o que mais direciona a entrega?',o:['O nome da campanha','O criativo','O horário de criação','A cor do botão'],a:1,e:'O algoritmo usa o criativo e quem reage a ele para encontrar o público.'}},
+  {id:'l23',title:'Google Ads com IA',min:12,body:[
+   '- <b>Anúncio responsivo de pesquisa:</b> até 15 títulos e 4 descrições. A IA gera, o Google combina.',
+   '- <b>Performance Max:</b> entregue bons recursos (imagens, vídeos, textos) e sinais de público.',
+   '- <b>Palavras-chave negativas</b> continuam essenciais para não pagar por busca errada.',
+   '- <b>Conversões bem configuradas</b> (GTM, tag, conversões otimizadas) são o combustível dos lances automáticos.',
+   '! IA erra contagem de caracteres. Peça para ela contar e confira antes de subir.'],
+   practice:'Gere 15 títulos (até 30 caracteres) e 4 descrições (até 90 caracteres) para anúncio de pesquisa de [produto]. Cubra benefício, preço, prova, urgência e marca. Mostre a contagem de caracteres de cada linha.',
+   quiz:{q:'Quantos títulos cabem em um anúncio responsivo de pesquisa?',o:['3','5','15','30'],a:2,e:'São até 15 títulos e 4 descrições, combinados automaticamente.'}},
+  {id:'l24',title:'Análise de criativos com métricas',min:15,body:[
+   '- <b>Hook rate</b> = visualizações de 3s ÷ impressões. Mostra se o começo prende.',
+   '- <b>Hold rate</b> = ThruPlays ÷ visualizações de 3s. Mostra se o meio segura.',
+   '- <b>CTR (link)</b> mostra se a mensagem gera clique.',
+   '- <b>CPA e ROAS</b> decidem se o criativo fica.',
+   '> Diagnóstico rápido:\nHook baixo → troque os 3 primeiros segundos\nHold baixo → meio cansativo, encurte\nCTR baixo → oferta ou CTA fracos\nClique alto e venda baixa → problema na página',
+   '! Compare criativos dentro do mesmo conjunto e período. Comparar campanhas diferentes engana.'],
+   practice:'Analise os dados de criativos abaixo. Calcule hook rate, hold rate, CTR e CPA de cada um, classifique em escalar, ajustar ou pausar, e diga o que mudar nos que precisam de ajuste. Mostre as fórmulas.\n\nDados (impressões, views 3s, ThruPlay, cliques, conversões, gasto): [cole aqui]',
+   quiz:{q:'Hook rate baixo indica problema em:',o:['Página de vendas','Primeiros segundos do vídeo','Preço','Pixel'],a:1,e:'Hook rate mede quem passou dos 3 primeiros segundos.'}}
+ ]},
+ {id:'m10',title:'Automação e agentes',icon:'flow',badge:'Engenheiro de Fluxos',bdesc:'Automatiza processos com IA',lessons:[
+  {id:'l25',title:'Automação de marketing com IA',min:12,body:[
+   'Toda automação é <b>gatilho → ação</b>. Com IA no meio, a ação pode pensar.',
+   '- <b>Exemplo:</b> lead preenche formulário → IA qualifica pelo texto → vai para o CRM na etapa certa → mensagem personalizada no WhatsApp.',
+   '- <b>Ferramentas:</b> n8n (flexível, pode rodar no seu servidor), Make e Zapier (mais simples).',
+   '- <b>Casos comuns:</b> responder comentários, resumir reuniões, relatório semanal automático, enriquecer leads.',
+   '! Comece por um processo repetitivo que você faz toda semana. Automatizar processo ruim só faz o erro acontecer mais rápido.'],
+   practice:'Quero automatizar este processo: [descreva o processo manual]. Desenhe o fluxo de automação passo a passo: gatilho, cada etapa, onde entra a IA, quais ferramentas usar (n8n, Make ou Zapier), dados que passam entre as etapas e pontos de aprovação humana.',
+   quiz:{q:'Qual o primeiro processo que vale automatizar?',o:['O mais raro e complexo','Um processo repetitivo que você faz toda semana','Todos de uma vez','Só a parte criativa'],a:1,e:'Repetição frequente dá retorno rápido e é mais fácil de testar.'}},
+  {id:'l26',title:'Agentes de IA no marketing',min:12,body:[
+   'Agente é uma IA com objetivo, ferramentas e autonomia para cumprir várias etapas sozinha.',
+   '- <b>Agente de pesquisa:</b> monitora concorrentes e resume novidades.',
+   '- <b>Agente SDR:</b> responde e qualifica leads no WhatsApp.',
+   '- <b>Agente de relatório:</b> puxa dados das plataformas e escreve o resumo.',
+   '- Defina limites: o que ele faz sozinho e o que precisa de aprovação.',
+   '- Registre tudo o que o agente fez, para auditar.',
+   '! Agente sem regra clara vira risco para a marca. Escreva as instruções como se fossem para um estagiário no primeiro dia.'],
+   practice:'Escreva as instruções de sistema para um agente de atendimento de [empresa] no WhatsApp. Inclua: objetivo, tom de voz, informações que ele pode dar, perguntas de qualificação, quando passar para um humano e o que ele nunca deve fazer ou prometer.',
+   quiz:{q:'O que diferencia um agente de um prompt comum?',o:['O agente é mais caro','O agente tem objetivo, ferramentas e executa várias etapas','O agente só funciona em inglês','Não há diferença'],a:1,e:'Um prompt responde uma vez. Um agente age em sequência até cumprir o objetivo.'}}
+ ]},
+ {id:'m11',title:'Dados e mensuração',icon:'chart',badge:'Analista de Dados',bdesc:'Mede e explica resultados',lessons:[
+  {id:'l27',title:'UTM e rastreamento',min:10,body:[
+   '- <b>utm_source:</b> de onde veio (facebook, google, newsletter).',
+   '- <b>utm_medium:</b> tipo de tráfego (cpc, social, email).',
+   '- <b>utm_campaign:</b> nome da campanha.',
+   '- <b>utm_content:</b> qual anúncio ou criativo.',
+   '- <b>utm_term:</b> palavra-chave ou público.',
+   '- Padronize: tudo em minúsculas, sem acento, com hífen.',
+   '! O ouro está em cruzar UTM com o CRM. Assim você sabe qual anúncio gerou venda, não só lead.'],
+   practice:'Crie um padrão de nomenclatura de UTMs para minha empresa, que anuncia em [canais]. Inclua regras, exemplos para 5 situações e uma fórmula de planilha para montar a URL automaticamente.',
+   quiz:{q:'Qual UTM identifica o criativo específico?',o:['utm_source','utm_medium','utm_campaign','utm_content'],a:3,e:'utm_content diferencia anúncios dentro da mesma campanha.'}},
+  {id:'l28',title:'IA como analista de resultados',min:12,body:[
+   '- Exporte dados em CSV e peça tendências, anomalias e comparação de períodos.',
+   '- Peça hipóteses e os próximos testes, não só o resumo.',
+   '- Peça uma versão para o cliente, em linguagem simples.',
+   '- Confira as contas. IA pode errar cálculo: peça que mostre a fórmula ou use ferramentas que executam código.',
+   '! Bom relatório responde três perguntas: o que aconteceu, por que aconteceu e o que fazer agora.'],
+   practice:'Analise os dados de campanha abaixo comparando [período A] com [período B]. Responda: o que aconteceu, por que provavelmente aconteceu e 3 ações recomendadas. Depois escreva um resumo de 5 linhas para o cliente, sem jargão. Mostre as fórmulas usadas.\n\nDados: [cole aqui]',
+   quiz:{q:'Um bom relatório precisa responder:',o:['Só quanto foi gasto','O que aconteceu, por quê e o que fazer agora','Quantos posts foram feitos','Qual ferramenta foi usada'],a:1,e:'Número sem interpretação e próximo passo não ajuda a decidir.'}}
+ ]},
+ {id:'m12',title:'Projeto final',icon:'flag',badge:'Formado Aprende IA aí',bdesc:'Entregou a campanha completa',lessons:[
+  {id:'l29',title:'Briefing da campanha completa',min:15,body:[
+   'Agora você junta tudo. Escolha um negócio real (seu, de um cliente ou de alguém próximo) e monte o briefing:',
+   '- Objetivo e meta numérica (ex.: 50 vendas em 30 dias).',
+   '- Persona com dores, desejos e objeções reais.',
+   '- Oferta e diferencial.',
+   '- Guia de voz.',
+   '- Canais e orçamento.',
+   '- Como o resultado será medido.',
+   '! Um briefing claro faz a IA trabalhar para você. Um briefing vago faz você trabalhar para a IA.'],
+   practice:'Você é estrategista de marketing. Com base nas informações abaixo, monte um briefing de campanha com: objetivo e meta, persona, oferta, mensagem principal, 3 ângulos criativos, canais, orçamento sugerido por canal e métricas de sucesso.\n\nNegócio: [descreva]',
+   quiz:{q:'O que deve abrir um briefing de campanha?',o:['A paleta de cores','O objetivo com meta numérica','A lista de hashtags','O nome da agência'],a:1,e:'Sem meta, não dá para saber se a campanha funcionou.'}},
+  {id:'l30',title:'Execução e entrega',min:20,body:[
+   'Checklist do projeto final. Entregue cada item:',
+   '- Persona e guia de voz',
+   '- 6 textos de anúncio em ângulos diferentes',
+   '- 5 criativos estáticos e 1 carrossel',
+   '- 1 vídeo curto com roteiro',
+   '- Calendário de 30 dias de conteúdo orgânico',
+   '- Estrutura de campanha (Meta e/ou Google) com UTMs',
+   '- Plano de métricas e modelo de relatório',
+   '! Ao concluir esta aula você libera o certificado final do Aprende IA aí.'],
+   practice:'Revise meu projeto de campanha abaixo como um diretor de marketing exigente. Avalie de 0 a 10: estratégia, copy, criativos, estrutura de mídia e mensuração. Para cada nota abaixo de 8, diga exatamente o que melhorar.\n\nProjeto: [cole ou descreva]',
+   quiz:{q:'Qual é a ordem certa para montar uma campanha?',o:['Criativo, depois objetivo','Briefing e objetivo, depois criação, mídia e mensuração','Mensuração primeiro, objetivo por último','Tanto faz'],a:1,e:'Estratégia define a criação. Criação sem objetivo é sorte.'}}
+ ]}
+]}
+];
+
+/* recursos do guia (curadoria original) */
+const RES=[
+ {cat:'Prompts e IA no marketing',items:[
+  ['IA para Profissionais de Marketing','HubSpot · aula gratuita em português','Introdução a aplicações de IA no marketing, prompts e usos práticos.','https://academy.hubspot.com/pt/lessons/iaparamarketing'],
+  ['AI for Marketing','HubSpot Academy · gratuito','Criação de conteúdo, personalização, prompts e análise de resultados.','https://academy.hubspot.com/courses/AI-for-Marketers'],
+  ['Cursos e recursos de IA','Google · recursos gratuitos','IA generativa, modelos de linguagem, prompts e produtividade.','https://grow.google/intl/pt/courses-and-tools/']]},
+ {cat:'Copy e conteúdo',items:[
+  ['Content Marketing Certification','HubSpot · gratuito com certificado','Estratégia editorial, storytelling, SEO e conteúdo para converter.','https://academy.hubspot.com/courses/content-marketing'],
+  ['AI Essentials','Canva Design School · gratuito','Escrita com IA, prompts e criação de peças visuais.','https://www.canva.com/design-school/courses/ai-essentials/'],
+  ['Digital Marketing Certification','HubSpot · gratuito com certificado','Fundamentos de marketing digital, SEO, redes sociais e aquisição.','https://academy.hubspot.com/courses/digital-marketing']]},
+ {cat:'Imagem com IA',items:[
+  ['Criação de imagens','Canva Design School','Descrição de imagens, composição, refinamento e peças de marketing.','https://www.canva.com/design-school/lessons/create-an-image-and-make-it-yours/'],
+  ['Adobe Firefly','Adobe Digital Academy · conteúdos gratuitos','IA generativa, prompting, ética e ferramentas criativas.','https://certifiedprofessional.adobe.com/firefly']]},
+ {cat:'Vídeo com IA',items:[
+  ['Runway Academy','Cursos e tutoriais','Anúncios com IA, geração de cenas, animação e transformação de vídeos.','https://academy.runwayml.com/courses'],
+  ['Google Skillshop: vídeo','Treinamento gratuito','Estratégia criativa e publicidade em vídeo no YouTube.','https://skillshop.withgoogle.com/intl/pt-BR/']]},
+ {cat:'Automação e produtividade',items:[
+  ['AI for Marketing, Sales and Service Bootcamp','HubSpot · bootcamp gratuito','IA em operações, conteúdo, análise de dados e agentes.','https://academy.hubspot.com/courses/ai-for-marketing-sales-and-service-bootcamp'],
+  ['Work Smarter with AI','Canva Design School','IA no trabalho criativo e aceleração de tarefas.','https://www.canva.com/design-school/courses/']]},
+ {cat:'Ads e métricas',items:[
+  ['Google Ads e mensuração','Google Skillshop · certificações gratuitas','Pesquisa, display, vídeo e mensuração de resultados.','https://skillshop.withgoogle.com/intl/pt-BR/'],
+  ['Cursos de marketing','HubSpot · catálogo gratuito','Redes sociais, conteúdo, e-mail e canais digitais.','https://www.hubspot.com/resources/courses/marketing']]}
+];
+const WEEKS=[
+ ['Semana 1','IA e prompts','Cursos HubSpot de IA para marketing. Pratique prompts de planejamento, pesquisa de público, copy e roteiro.','Biblioteca de prompts'],
+ ['Semana 2','Copy e visual','Content Marketing (HubSpot) e AI Essentials (Canva). Crie anúncios, thumbnails e carrosséis.','Peças de uma campanha real'],
+ ['Semana 3','Vídeo com IA','Runway Academy e Canva vídeo. Movimentos de câmera, cenas de apoio e anúncio curto.','Um vídeo publicitário curto'],
+ ['Semana 4','Automação e estratégia','Bootcamp HubSpot e Skillshop. Fluxo de produção, distribuição e métricas.','Processo documentado e replicável']
+];
+
+/* conquistas extras */
+const EXTRA=[
+ {id:'first',name:'Primeira Aula',desc:'Concluiu a primeira aula',icon:'star',test:s=>Object.keys(s.done).length>=1},
+ {id:'streak',name:'Em Chamas',desc:'Estudou 3 dias seguidos',icon:'fire',test:s=>s.streak>=3},
+ {id:'lab',name:'Cientista de Prompts',desc:'Copiou um prompt do Laboratório',icon:'lab',test:s=>s.labUsed},
+ {id:'quiz10',name:'Na Mosca',desc:'Acertou 10 quizzes de primeira',icon:'target',test:s=>Object.values(s.done).filter(d=>d.first).length>=10},
+];
+const RANKS=[[0,'Curioso'],[500,'Aprendiz'],[1300,'Criador'],[2200,'Estrategista'],[3200,'Mestre IA']];
+
+/* ============ ESTADO ============ */
+const KEY='aprende-ia-ai-v1';
+let S={name:'',done:{},xp:0,streak:0,lastDay:'',labUsed:false,instructor:false,badges:{}};
+const save=()=>{if(window.persistStudent)window.persistStudent();};
+
+const ALL=[];LEVELS.forEach(L=>L.modules.forEach(M=>M.lessons.forEach(les=>ALL.push({L,M,les}))));
+const lvDone=L=>L.modules.every(M=>M.lessons.every(l=>S.done[l.id]));
+const lvPct=L=>{let t=0,d=0;L.modules.forEach(M=>M.lessons.forEach(l=>{t++;if(S.done[l.id])d++}));return [d,t]};
+const modDone=M=>M.lessons.every(l=>S.done[l.id]);
+const lvUnlocked=i=>i===0||lvDone(LEVELS[i-1]);
+const rank=()=>{let r=RANKS[0],n=null;for(let i=0;i<RANKS.length;i++){if(S.xp>=RANKS[i][0]){r=RANKS[i];n=RANKS[i+1]||null}}return{r,n}};
+const nextLesson=()=>ALL.find(x=>!S.done[x.les.id]);
+const allDone=()=>LEVELS.every(lvDone);
+
+let ui={tab:'n1',lesson:null,quiz:null,tpl:'ad'};
+
+function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),2600)}
+function copy(text,btn){
+  const done=()=>{toast('Prompt copiado');if(btn){const o=btn.innerHTML;btn.innerHTML=svg('check','width="16" height="16"')+' Copiado';setTimeout(()=>btn.innerHTML=o,1600)}};
+  try{navigator.clipboard.writeText(text).then(done,()=>fallback())}catch(e){fallback()}
+  function fallback(){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(e){}ta.remove();done()}
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function touchStreak(){
+  const d=new Date();const today=d.toISOString().slice(0,10);
+  if(S.lastDay===today)return;
+  const y=new Date(d-864e5).toISOString().slice(0,10);
+  S.streak=S.lastDay===y?S.streak+1:1;S.lastDay=today;
+}
+function checkBadges(){
+  const got=[];
+  LEVELS.forEach(L=>L.modules.forEach(M=>{if(modDone(M)&&!S.badges[M.id]){S.badges[M.id]=1;S.xp+=100;got.push(M.badge)}}));
+  EXTRA.forEach(b=>{if(b.test(S)&&!S.badges[b.id]){S.badges[b.id]=1;got.push(b.name)}});
+  return got;
+}
+
+/* ============ NAV ============ */
+const NAV=[['inicio','Início','home'],['trilha','Trilha','path'],['lab','Laboratório','lab'],['recursos','Recursos','book'],['conquistas','Conquistas','trophy']];
+function route(){const h=location.hash.slice(1);return NAV.some(n=>n[0]===h)?h:'inicio'}
+function renderNav(){
+  const r=ui.lesson?'trilha':route();
+  const html=NAV.map(([id,t,ic])=>`<a href="#${id}" class="${r===id?'on':''}" data-nav="${id}">${svg(ic)}<span>${t}</span></a>`).join('');
+  document.getElementById('nav').innerHTML=html;
+  document.getElementById('tabbar').innerHTML=html;
+  const {r:rk,n}=rank();const pct=n?Math.min(100,(S.xp-rk[0])/(n[0]-rk[0])*100):100;
+  document.getElementById('sideMe').innerHTML=`<span class="eyebrow">${esc(S.name||'Aluno')} · ${rk[1]}</span><div class="xpbar"><i style="width:${pct}%"></i></div><span class="mono" style="font-size:12px;color:var(--muted)">${S.xp} XP${n?` · faltam ${n[0]-S.xp} para ${n[1]}`:''}</span>`;
+}
+
+/* ============ VIEWS ============ */
+function vHome(){
+  const {r:rk,n}=rank();const pct=n?Math.min(100,(S.xp-rk[0])/(n[0]-rk[0])*100):100;
+  const nx=nextLesson();const totalDone=Object.keys(S.done).length;
+  const nb=Object.keys(S.badges).length;
+  return `
+  <div class="mobilelogo logo">Aprende <span class="ia">IA</span> <span class="ai">aí</span></div>
+  <section class="hero">
+    <div class="hello">
+      <span class="eyebrow">Escola de IA no marketing</span>
+      <h1>${S.name?`Bora, <em>${esc(S.name.split(' ')[0])}</em>.`:'Aprende <em>IA</em> aí.'}<br>Do primeiro prompt ao anúncio que vende.</h1>
+      <p>3 níveis, 12 módulos e 30 aulas práticas sobre prompt, copy, imagem, vídeo, conteúdo, estratégia, anúncios e automação. Cada aula termina com um prompt pronto para usar e um quiz.</p>
+      <div class="namefield"><input id="nm" placeholder="Seu nome (vai no certificado)" value="${esc(S.name)}" maxlength="60"><button class="btn ghost sm" id="saveName">Salvar nome</button></div>
+    </div>
+    <div class="rankcard">
+      <span class="eyebrow">Seu nível de aluno</span>
+      <div class="rank">${rk[1]}</div>
+      <div class="xpbar"><i style="width:${pct}%"></i></div>
+      <span class="mono" style="font-size:12px;font-weight:600">${S.xp} XP${n?` · ${n[0]-S.xp} para ${n[1]}`:' · nível máximo'}</span>
+      <div class="stats"><div><b>${totalDone}/${ALL.length}</b><span>aulas</span></div><div><b>${nb}</b><span>conquistas</span></div><div><b>${S.streak}</b><span>dias seguidos</span></div></div>
+    </div>
+  </section>
+  ${nx?`<section class="next"><div class="t"><span class="eyebrow">${totalDone?'Continue de onde parou':'Comece por aqui'} · ${nx.L.name} · ${nx.M.title}</span><h3>${nx.les.title}</h3></div><button class="btn" data-open="${nx.les.id}">${totalDone?'Continuar':'Começar aula 1'} ${svg('arrow','width="18" height="18"')}</button></section>`
+     :`<section class="next"><div class="t"><span class="eyebrow">Curso concluído</span><h3>Você é Mestre em IA no marketing. Seu certificado está pronto.</h3></div><button class="btn" data-cert="final">Ver certificado</button></section>`}
+  <section style="display:flex;flex-direction:column;gap:16px">
+    <div class="sec-h"><h2>Sua formação</h2><span class="eyebrow">${LEVELS.reduce((a,l)=>a+l.hours,0)} horas · 4 certificados</span></div>
+    <div class="levels">${LEVELS.map((L,i)=>{const [d,t]=lvPct(L);const un=lvUnlocked(i);const done=lvDone(L);const cur=un&&!done;
+      return `<button class="lv ${!un?'locked':''} ${done?'done':''} ${cur?'cur':''}" data-level="${L.id}" ${un?'':'aria-disabled="true"'}>
+        <span class="num">${L.num}</span>
+        <span class="chip ${done?'g':cur?'p':''}">${done?'Concluído':un?'Em andamento':'Bloqueado'}</span>
+        <h3>${L.name}</h3><p>${L.desc}</p>
+        <div class="xpbar"><i style="width:${d/t*100}%"></i></div>
+        <div class="meta"><span>${d}/${t} aulas</span><span>${L.hours}h</span></div>
+      </button>`}).join('')}</div>
+  </section>`;
+}
+
+function vTrilha(){
+  const i=LEVELS.findIndex(l=>l.id===ui.tab);const L=LEVELS[i];const un=lvUnlocked(i);const [d,t]=lvPct(L);
+  let prevDone=true;
+  return `
+  <div class="tabs" role="tablist">${LEVELS.map((x,j)=>`<button role="tab" class="${x.id===ui.tab?'on':''}" data-tab="${x.id}">${x.num} · ${x.name}${lvUnlocked(j)?'':' 🔒'}</button>`).join('')}</div>
+  <div class="lvhead"><div><span class="eyebrow">Nível ${L.num} · ${L.tagline} · ${L.hours}h</span><h1>${L.name}</h1><p>${L.desc}</p></div>
+   <div style="text-align:right"><span class="mono" style="font-size:28px;font-weight:600">${d}/${t}</span><div class="eyebrow">aulas concluídas</div></div></div>
+  ${!un?`<div class="tip" style="max-width:none">Conclua todas as aulas do nível anterior para liberar este nível e o certificado dele.</div>`:''}
+  <div class="mods">${L.modules.map(M=>{const md=modDone(M);
+    return `<article class="mod ${md?'complete':''}">
+      <div class="mod-h"><div class="ico">${svg(M.icon)}</div><div class="t"><h3>${M.title}</h3><div class="sub">${M.lessons.length} aulas · recompensa: medalha <b>${M.badge}</b> + 100 XP</div></div>${md?'<span class="chip g">Medalha conquistada</span>':''}</div>
+      <ol class="lessons">${M.lessons.map(l=>{const ok=!!S.done[l.id];const can=un&&(prevDone);prevDone=ok;
+        return `<li><button data-open="${l.id}" ${can?'':'disabled'}><span class="dot ${ok?'ok':''}">${ok?svg('check'):(!can?svg('lock','width="12" height="12" style="stroke:var(--dim)"'):'')}</span><span>${l.title}</span><span class="min">${l.min} min</span></button></li>`}).join('')}</ol>
+    </article>`}).join('')}</div>
+  ${lvDone(L)?`<div class="next"><div class="t"><span class="eyebrow">Nível concluído</span><h3>Certificado: ${L.cert}</h3></div><button class="btn" data-cert="${L.id}">Ver certificado</button></div>`:''}`;
+}
+
+function bodyHTML(lines){
+  let out='',ul=[];
+  const flush=()=>{if(ul.length){out+='<ul>'+ul.map(x=>`<li>${x}</li>`).join('')+'</ul>';ul=[]}};
+  lines.forEach(s=>{
+    if(s.startsWith('- ')){ul.push(s.slice(2));return}
+    flush();
+    if(s.startsWith('! '))out+=`<div class="tip">${s.slice(2)}</div>`;
+    else if(s.startsWith('> '))out+=`<div class="ex">${s.slice(2)}</div>`;
+    else out+=`<p>${s}</p>`;
+  });flush();return out;
+}
+
+function vLesson(){
+  const x=ALL.find(a=>a.les.id===ui.lesson);if(!x){ui.lesson=null;return vTrilha()}
+  const {L,M,les}=x;const idx=ALL.indexOf(x);const done=S.done[les.id];
+  const q=les.quiz;const st=ui.quiz||(done?{pick:q.a,first:done.first}:null);
+  const nxt=ALL[idx+1];
+  return `
+  <div class="lesson">
+    <div style="display:flex;flex-direction:column;gap:24px;min-width:0">
+      <div><div class="crumb"><button class="btn ghost sm" data-back>← Trilha</button><span class="chip">${L.name}</span><span class="chip p">${M.title}</span><span class="chip">${les.min} min</span></div>
+      <h1>${les.title}</h1></div>
+      <div class="content">${bodyHTML(les.body)}</div>
+      <section class="box"><span class="eyebrow">Na prática · copie e use no ChatGPT, Claude ou Gemini</span><h3>Seu prompt desta aula</h3>
+        <div class="prompt" id="pr">${esc(les.practice)}</div>
+        <div class="row"><button class="btn pink sm" data-copy="pr">${svg('copy','width="16" height="16"')} Copiar prompt</button><span style="font-size:13px;color:var(--muted)">Troque o que está entre [colchetes] pelo seu caso.</span></div>
+      </section>
+      <section class="box"><span class="eyebrow">Quiz · +25 XP se acertar de primeira</span><h3>${q.q}</h3>
+        <div class="opts">${q.o.map((o,i)=>{let c='';if(st){if(i===q.a&&st.pick===q.a)c='right';else if(i===st.pick)c='wrong'}
+          return `<button class="opt ${c}" data-ans="${i}" ${st&&st.pick===q.a?'disabled':''}>${o}</button>`}).join('')}</div>
+        ${st?`<div class="feedback">${st.pick===q.a?'<b style="color:var(--green)">Certo.</b> ':'<b style="color:var(--pink)">Ainda não.</b> Tente outra opção. '}${st.pick===q.a?q.e:''}</div>`:''}
+      </section>
+      <div class="row">
+        ${done?`<span class="chip g">${svg('check','width="12" height="12"')} Aula concluída</span>${nxt&&(lvUnlocked(LEVELS.indexOf(nxt.L)))?`<button class="btn" data-open="${nxt.les.id}">Próxima aula ${svg('arrow','width="18" height="18"')}</button>`:`<button class="btn" data-back>Voltar à trilha</button>`}`
+          :`<button class="btn" data-complete ${st&&st.pick===q.a?'':'disabled'}>Concluir aula · +50 XP</button>${st&&st.pick===q.a?'':'<span style="font-size:13px;color:var(--muted)">Acerte o quiz para concluir.</span>'}`}
+      </div>
+    </div>
+    <aside class="aside">
+      <div class="box"><span class="eyebrow">${M.title}</span>
+        <ul class="mini">${M.lessons.map(l=>`<li><button class="${l.id===les.id?'on':''}" data-open="${l.id}"><span class="d ${S.done[l.id]?'ok':''}"></span>${l.title}</button></li>`).join('')}</ul></div>
+      <div class="box"><span class="eyebrow">Recompensa do módulo</span><div class="row"><div class="medal" style="width:44px;height:44px">${svg('trophy','style="stroke:var(--pink)"')}</div><div><b>${M.badge}</b><div style="font-size:13px;color:var(--muted)">+100 XP ao concluir as ${M.lessons.length} aulas</div></div></div></div>
+    </aside>
+  </div>`;
+}
+
+const TPL={
+ ad:{name:'Copy de anúncio',fields:[['produto','Produto ou oferta','Ex.: curso de Excel para analistas, R$ 297'],['publico','Público','Ex.: analistas de 22 a 35 anos que querem promoção'],['angulo','Ângulo',null,['dor','desejo','prova social','urgência','quebra de objeção','autoridade']],['rede','Plataforma',null,['Meta Ads','Google Ads','TikTok Ads','LinkedIn Ads']],['evitar','Evitar','Ex.: promessas de resultado garantido, emojis']],
+  build:v=>`Você é um copywriter de performance especialista em ${v.rede}.\n\nContexto:\n- Produto/oferta: ${v.produto||'[produto]'}\n- Público: ${v.publico||'[público]'}\n- Ângulo: ${v.angulo}\n\nTarefa: crie 5 variações de anúncio usando o ângulo de ${v.angulo}.\n\nFormato: para cada variação, entregue título (até 40 caracteres), texto principal (até 90 palavras, primeira linha como gancho) e CTA. Numere como V1, V2...\n\nRestrições: ${v.evitar||'sem clichês como "descubra", "transforme" e "incrível"'}. Nada de promessas que o produto não cumpre.`},
+ social:{name:'Legenda para redes',fields:[['tema','Tema do post','Ex.: 3 erros ao precificar na Amazon'],['marca','Marca e tom','Ex.: direta, didática, sem gíria'],['rede','Rede',null,['Instagram','LinkedIn','TikTok','Todas']],['cta','Ação desejada',null,['salvar','comentar','compartilhar','clicar no link da bio']]],
+  build:v=>`Você é social media sênior.\n\nContexto: marca com tom ${v.marca||'[tom da marca]'}. Tema: ${v.tema||'[tema]'}.\n\nTarefa: escreva 3 opções de legenda para ${v.rede}.\n\nFormato: primeira linha como gancho que funcione antes do "mais", corpo com uma ideia só e frases curtas, fechamento pedindo para ${v.cta}. Sugira 5 hashtags relevantes no final.\n\nRestrições: sem emoji em excesso, sem clichês.`},
+ image:{name:'Prompt de imagem',fields:[['sujeito','Sujeito','Ex.: garrafa de cerveja artesanal suada'],['cenario','Cenário','Ex.: balcão de bar de madeira'],['estilo','Estilo',null,['fotografia de produto','lifestyle','flat lay','ilustração 3D','editorial','minimalista']],['luz','Luz',null,['luz natural suave','golden hour','estúdio com fundo infinito','neon noturno','luz dura com sombra marcada']],['prop','Proporção',null,['4:5','1:1','9:16','16:9']]],
+  build:v=>`${v.sujeito||'[sujeito]'}, ${v.cenario||'[cenário]'}, ${v.estilo}, ${v.luz}, enquadramento em close-up com profundidade de campo rasa, cores ricas e realistas, alta nitidez, composição com espaço livre para texto, proporção ${v.prop}`},
+ video:{name:'Roteiro de reels',fields:[['produto','Produto ou tema','Ex.: tênis de corrida leve'],['publico','Público','Ex.: corredores iniciantes'],['dur','Duração',null,['15 segundos','30 segundos','45 segundos','60 segundos']],['estilo','Estilo',null,['UGC (pessoa falando para a câmera)','demonstração de produto','antes e depois','tutorial rápido','cinematográfico']]],
+  build:v=>`Você é roteirista de vídeos curtos para redes sociais.\n\nContexto: vídeo sobre ${v.produto||'[produto]'} para ${v.publico||'[público]'}, estilo ${v.estilo}, duração de ${v.dur}.\n\nTarefa: crie o roteiro completo.\n\nFormato: tabela com 3 colunas (tempo, o que aparece na tela, fala/legenda). Comece com um gancho visual e verbal nos 3 primeiros segundos e termine com um único CTA. Antes da tabela, me dê 3 opções de gancho diferentes.\n\nRestrições: frases curtas, legenda na tela em todas as cenas, nada de introdução lenta.`},
+ persona:{name:'Pesquisa de persona',fields:[['negocio','Negócio','Ex.: loja de suplementos online'],['dados','Cole comentários/avaliações reais','Cole aqui textos de clientes (sem dados pessoais)']],
+  build:v=>`Você é pesquisador de mercado e estrategista de marketing.\n\nContexto: negócio — ${v.negocio||'[negócio]'}.\n\nTarefa: analise os textos de clientes abaixo e agrupe em dores, desejos, objeções e dúvidas frequentes.\n\nFormato: para cada grupo, traga 3 frases literais dos clientes, o que isso revela e 1 ideia de conteúdo ou anúncio. No final, escreva uma persona de 1 parágrafo.\n\nTextos:\n${v.dados||'[cole aqui]'}`},
+ metrics:{name:'Análise de métricas',fields:[['plat','Plataforma',null,['Meta Ads','Google Ads','TikTok Ads','Orgânico Instagram']],['meta','Objetivo','Ex.: vendas com CPA abaixo de R$ 40'],['dados','Cole os dados','Cole a tabela exportada']],
+  build:v=>`Você é analista de performance sênior em ${v.plat}.\n\nObjetivo da conta: ${v.meta||'[objetivo]'}.\n\nTarefa: analise os dados abaixo. Calcule hook rate, hold rate, CTR, CPC e CPA quando houver dados para isso. Classifique cada anúncio ou campanha em escalar, ajustar ou pausar.\n\nFormato: 1) tabela com as métricas e a classificação, 2) o que aconteceu, 3) por que provavelmente aconteceu, 4) 3 ações recomendadas, 5) resumo de 5 linhas para o cliente sem jargão. Mostre as fórmulas.\n\nDados:\n${v.dados||'[cole aqui]'}`}
+};
+let labVals={};
+function vLab(){
+  const T=TPL[ui.tpl];
+  T.fields.forEach(f=>{if(labVals[f[0]]===undefined)labVals[f[0]]=f[3]?f[3][0]:''});
+  return `
+  <div><span class="eyebrow">Ferramenta</span><h1 style="font-size:clamp(30px,5vw,46px);font-weight:800;margin-top:8px">Laboratório de prompts</h1>
+  <p style="color:var(--muted);max-width:60ch;margin:8px 0 0">Preencha os campos e o prompt se monta sozinho, já no método Papel, Contexto, Tarefa, Formato e Restrições.</p></div>
+  <div class="tpls">${Object.entries(TPL).map(([k,t])=>`<button class="${k===ui.tpl?'on':''}" data-tpl="${k}">${t.name}</button>`).join('')}</div>
+  <div class="lab">
+    <div class="box fields">${T.fields.map(([k,lab,ph,opts])=>`<div class="field"><label for="f-${k}">${lab}</label>${opts?`<select id="f-${k}" data-f="${k}">${opts.map(o=>`<option ${labVals[k]===o?'selected':''}>${o}</option>`).join('')}</select>`:(k==='dados'?`<textarea id="f-${k}" data-f="${k}" placeholder="${ph}">${esc(labVals[k])}</textarea>`:`<input id="f-${k}" data-f="${k}" placeholder="${ph}" value="${esc(labVals[k])}">`)}</div>`).join('')}</div>
+    <div class="box" style="position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px)"><span class="eyebrow">Prompt gerado</span><div class="prompt" id="labOut">${esc(T.build(labVals))}</div>
+      <div class="row"><button class="btn pink sm" data-copy="labOut">${svg('copy','width="16" height="16"')} Copiar prompt</button></div></div>
+  </div>`;
+}
+
+function vRes(){
+  return `
+  <div><span class="eyebrow">Curadoria gratuita</span><h1 style="font-size:clamp(30px,5vw,46px);font-weight:800;margin-top:8px">Recursos e cursos complementares</h1>
+  <p style="color:var(--muted);max-width:62ch;margin:8px 0 0">Cursos gratuitos para aprofundar cada trilha. Disponibilidade, idioma e certificados podem mudar: confira na página de cada plataforma.</p></div>
+  <section style="display:flex;flex-direction:column;gap:14px"><div class="sec-h"><h2>Plano de 4 semanas</h2><span class="eyebrow">30 a 45 min por dia · seg a sex</span></div>
+  <div class="plan">${WEEKS.map(w=>`<div class="week"><span class="eyebrow">${w[0]}</span><h3>${w[1]}</h3><p>${w[2]}</p><b>Entrega: ${w[3]}</b></div>`).join('')}</div></section>
+  ${RES.map(g=>`<section style="display:flex;flex-direction:column;gap:12px"><h2 style="font-size:22px">${g.cat}</h2><div class="res">${g.items.map(r=>`<article class="rescard"><span class="eyebrow">${r[1]}</span><h3>${r[0]}</h3><p>${r[2]}</p><a href="${r[3]}" target="_blank" rel="noopener">Abrir curso ↗</a></article>`).join('')}</div></section>`).join('')}`;
+}
+
+function vConq(){
+  const mods=[];LEVELS.forEach(L=>L.modules.forEach(M=>mods.push(M)));
+  return `
+  <div><span class="eyebrow">Recompensas</span><h1 style="font-size:clamp(30px,5vw,46px);font-weight:800;margin-top:8px">Conquistas e certificados</h1></div>
+  <section style="display:flex;flex-direction:column;gap:14px"><div class="sec-h"><h2>Certificados</h2><span class="eyebrow">Um por nível + certificado final</span></div>
+  <div class="certs">${LEVELS.map((L,i)=>{const ok=lvDone(L);return `<div class="certrow"><div class="medal" style="width:48px;height:48px">${svg(ok?'check':'lock',ok?'style="stroke:var(--green)"':'')}</div><div class="t"><h3>${L.cert}</h3><p>Nível ${L.name} · ${L.hours}h</p></div><button class="btn ${ok?'':'ghost'} sm" data-cert="${L.id}">${ok?'Ver certificado':'Prévia'}</button></div>`}).join('')}
+   <div class="certrow" style="border-color:var(--pink)"><div class="medal" style="width:48px;height:48px">${svg(allDone()?'star':'lock',allDone()?'style="stroke:var(--pink)"':'')}</div><div class="t"><h3>Formação Completa em IA no Marketing</h3><p>Todos os níveis · ${LEVELS.reduce((a,l)=>a+l.hours,0)}h</p></div><button class="btn ${allDone()?'pink':'ghost'} sm" data-cert="final">${allDone()?'Ver certificado':'Prévia'}</button></div>
+  </div></section>
+  <section style="display:flex;flex-direction:column;gap:14px"><div class="sec-h"><h2>Medalhas dos módulos</h2><span class="eyebrow">+100 XP cada</span></div>
+  <div class="badges">${mods.map(M=>`<div class="badge ${S.badges[M.id]?'got':''}"><div class="medal"><span>${svg(M.icon)}</span></div><b>${M.badge}</b><small>${M.bdesc}</small></div>`).join('')}</div></section>
+  <section style="display:flex;flex-direction:column;gap:14px"><div class="sec-h"><h2>Conquistas especiais</h2></div>
+  <div class="badges">${EXTRA.map(b=>`<div class="badge ${S.badges[b.id]?'got':''}"><div class="medal"><span>${svg(b.icon)}</span></div><b>${b.name}</b><small>${b.desc}</small></div>`).join('')}</div></section>
+  <section class="box"><span class="eyebrow">Configurações</span>
+
+    <div class="confirm" id="resetArea"><button class="btn ghost sm" id="resetBtn">Zerar meu progresso</button></div>
+  </section>`;
+}
+
+function certCode(id){let h=0;const s=(S.name||'aluno')+id;for(const c of s)h=(h*31+c.charCodeAt(0))>>>0;return 'AIA-'+id.toUpperCase()+'-'+h.toString(36).toUpperCase().slice(0,6)}
+function openCert(id){
+  const L=LEVELS.find(l=>l.id===id);const ok=id==='final'?allDone():lvDone(L);
+  const title=id==='final'?'Formação Completa em IA no Marketing':L.cert;
+  const hours=id==='final'?LEVELS.reduce((a,l)=>a+l.hours,0):L.hours;
+  const scope=id==='final'?'prompt, copywriting, imagem, vídeo, conteúdo, estratégia, anúncios, automação e mensuração com inteligência artificial':L.modules.map(m=>m.title.toLowerCase()).join(', ');
+  const date=new Date().toLocaleDateString('pt-BR',{day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('modal').innerHTML=`<div class="overlay" id="ov" role="dialog" aria-modal="true" aria-label="Certificado">
+   <div class="cert-wrap">
+    ${ok?'':'<div class="tip" style="max-width:none">Prévia. O certificado é liberado quando você concluir todas as aulas do nível.</div>'}
+    <div class="cert" style="${ok?'':'filter:grayscale(.7);opacity:.75'}">
+      <div class="top"><div class="logo">Aprende <span class="ia">IA</span> <span class="ai">aí</span></div><div class="kind">Certificado de conclusão<br>${id==='final'?'Formação completa':'Nível '+L.num}</div></div>
+      <div class="mid"><span class="lbl">Certificamos que</span><div class="who">${esc(S.name||'Seu nome aqui')}</div>
+        <div class="what">concluiu <b>${title}</b>, com carga horária de ${hours} horas, cobrindo ${scope}.</div></div>
+      <div class="bot"><div class="sig">Coordenação Aprende IA aí<br>${date}</div><div>Código ${certCode(id)}</div><div class="seal">${hours}h<br>CERTI<br>FICADO</div></div>
+    </div>
+    <div class="row" style="justify-content:space-between"><span style="font-size:13px;color:var(--muted)">${S.name?'':'Salve seu nome na tela inicial para ele aparecer aqui. '}Para salvar em PDF, use o botão Imprimir / PDF e selecione “Salvar como PDF”.</span><div class="row"><button class="btn sm" id="printCert" ${ok?"":"disabled"}>Imprimir / PDF</button><button class="btn ghost sm" id="closeCert">Fechar</button></div></div>
+   </div></div>`;
+}
+
+/* ============ RENDER ============ */
+function render(){
+  const v=document.getElementById('view');const r=route();
+  if(ui.lesson)v.innerHTML=vLesson();
+  else v.innerHTML={inicio:vHome,trilha:vTrilha,lab:vLab,recursos:vRes,conquistas:vConq}[r]();
+  renderNav();
+}
+
+/* ============ EVENTOS ============ */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button,a');if(!t)return;
+  if(t.dataset.nav){ui.lesson=null;ui.quiz=null}
+  if(t.dataset.open){const x=ALL.find(a=>a.les.id===t.dataset.open);ui.lesson=t.dataset.open;ui.quiz=null;ui.tab=x.L.id;if(location.hash!=='#trilha')history.replaceState(null,'','#trilha');render();window.scrollTo(0,0);return}
+  if('back' in t.dataset){ui.lesson=null;ui.quiz=null;render();window.scrollTo(0,0);return}
+  if(t.dataset.level){const i=LEVELS.findIndex(l=>l.id===t.dataset.level);if(!lvUnlocked(i)){toast('Conclua o nível anterior para liberar');return}ui.tab=t.dataset.level;location.hash='#trilha';render();return}
+  if(t.dataset.tab){ui.tab=t.dataset.tab;render();return}
+  if(t.dataset.ans!==undefined){const i=+t.dataset.ans;const x=ALL.find(a=>a.les.id===ui.lesson);
+    if(!ui.quiz)ui.quiz={pick:i,first:i===x.les.quiz.a};else ui.quiz.pick=i;
+    render();return}
+  if('complete' in t.dataset){const x=ALL.find(a=>a.les.id===ui.lesson);if(S.done[x.les.id])return;
+    const first=!!(ui.quiz&&ui.quiz.first);S.done[x.les.id]={at:Date.now(),first};S.xp+=50+(first?25:0);touchStreak();
+    const got=checkBadges();save();ui.quiz=null;render();
+    toast(got.length?`+${50+(first?25:0)} XP · Nova conquista: ${got.join(', ')}`:`+${50+(first?25:0)} XP · Aula concluída`);
+    if(lvDone(x.L)&&x.M===x.L.modules[x.L.modules.length-1]&&x.les===x.M.lessons[x.M.lessons.length-1])setTimeout(()=>openCert(allDone()?'final':x.L.id),900);
+    return}
+  if(t.dataset.copy){copy(document.getElementById(t.dataset.copy).textContent,t);if(t.dataset.copy==='labOut'&&!S.labUsed){S.labUsed=true;const g=checkBadges();save();if(g.length)setTimeout(()=>toast('Nova conquista: '+g.join(', ')),1200);renderNav()}return}
+  if(t.dataset.tpl){ui.tpl=t.dataset.tpl;labVals={};render();return}
+  if(t.dataset.cert){openCert(t.dataset.cert);return}
+  if(t.id==='printCert'){window.print();return}
+  if(t.id==='closeCert'){document.getElementById('modal').innerHTML='';return}
+  if(t.id==='saveName'){S.name=document.getElementById('nm').value.trim();save();render();toast('Nome salvo');return}
+  if(t.id==='resetBtn'){document.getElementById('resetArea').innerHTML='<span>Apagar todo o progresso, XP e conquistas?</span><button class="btn pink sm" id="resetYes">Sim, zerar</button><button class="btn ghost sm" id="resetNo">Cancelar</button>';return}
+  if(t.id==='resetYes'){const n=S.name;S={name:n,done:{},xp:0,streak:0,lastDay:'',labUsed:false,instructor:false,badges:{}};save();render();toast('Progresso zerado');return}
+  if(t.id==='resetNo'){render();return}
+});
+document.addEventListener('click',e=>{if(e.target.id==='ov')document.getElementById('modal').innerHTML=''});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('modal').innerHTML=''});
+document.addEventListener('input',e=>{const f=e.target.dataset&&e.target.dataset.f;if(!f)return;labVals[f]=e.target.value;const o=document.getElementById('labOut');if(o)o.textContent=TPL[ui.tpl].build(labVals)});
+document.addEventListener('change',e=>{
+  const f=e.target.dataset&&e.target.dataset.f;if(f){labVals[f]=e.target.value;const o=document.getElementById('labOut');if(o)o.textContent=TPL[ui.tpl].build(labVals)}});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='nm')document.getElementById('saveName').click()});
+window.addEventListener('hashchange',()=>{ui.lesson=null;ui.quiz=null;render();window.scrollTo(0,0)});
+window.appReady=true;
+</script>
+
+<script type="module" src="/auth.js"></script>

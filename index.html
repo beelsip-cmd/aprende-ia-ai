@@ -1,3 +1,5 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Aprende IA aí</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -238,6 +240,24 @@ main{min-width:0;padding-block:32px 96px;padding-left:max(16px,env(safe-area-ins
  .cert{width:100%!important;max-width:none!important;aspect-ratio:1.414/1!important;break-inside:avoid!important}
  .cert-wrap>.row,.cert-wrap>.tip{display:none!important}
 }
+
+.practice-guide{display:grid;gap:13px}
+.practice-steps{display:grid;gap:8px}
+.practice-step{display:flex;gap:12px;align-items:flex-start;background:var(--raise);border:1px solid var(--line);border-radius:11px;padding:12px}
+.practice-number{display:grid;place-items:center;flex:none;width:28px;height:28px;border-radius:50%;background:var(--pink);color:white;font-weight:800;font-size:13px}
+.practice-step b{display:block}
+.practice-step small{display:block;color:var(--muted);font-size:13px}
+.practice-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.practice-field{display:flex;flex-direction:column;gap:6px}
+.practice-field label{font-weight:700;font-size:13px}
+.practice-field input,.practice-field textarea{width:100%;background:var(--ink);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:11px;font:inherit}
+.practice-field small{color:var(--muted)}
+.practice-explain{background:var(--raise);border-radius:10px;padding:14px;color:var(--muted);font-size:14px}
+.practice-explain summary{cursor:pointer;font-weight:700;color:var(--text)}
+.practice-check{display:flex;gap:9px;align-items:flex-start;color:var(--muted);font-size:14px}
+.practice-check input{margin-top:5px;accent-color:var(--pink)}
+.practice-feedback{background:var(--pink-soft);border:1px solid var(--line);border-radius:10px;padding:12px}
+.practice-feedback strong{color:var(--text)}
 </style>
 
 <style>
@@ -247,6 +267,7 @@ main{min-width:0;padding-block:32px 96px;padding-left:max(16px,env(safe-area-ins
 .auth-card button{background:#ef4357;border:0;color:white;border-radius:10px;padding:12px;font-weight:700}.auth-card button.alt{background:transparent;border:1px solid #69344b}.auth-card button:disabled{opacity:.5}
 #authError{color:#ff98a6;font-size:13px;min-height:18px}#logout{margin-top:10px}
 </style>
+</head><body>
 <div id="authGate"><div class="auth-card"><div class="logo">Aprende <span class="ia">IA</span> aí</div><h1 id="authTitle">Entre na sua escola</h1><p>Aprenda IA aplicada ao marketing no seu ritmo.</p><form id="authForm" style="display:grid;gap:12px"><input id="authName" placeholder="Seu nome" autocomplete="name" style="display:none"><input id="authEmail" type="email" required placeholder="Seu e-mail" autocomplete="email"><input id="authPassword" type="password" required minlength="8" placeholder="Senha (mínimo 8 caracteres)" autocomplete="current-password"><button id="authSubmit">Entrar</button></form><div id="authError" role="status"></div><button class="alt" id="authToggle">Criar uma conta</button><button class="alt" id="authReset">Esqueci minha senha</button><small style="color:#a98695">Seu progresso será vinculado à sua conta.</small></div></div>
 <div class="app" id="studentApp" style="display:none">
   <aside class="side">
@@ -760,6 +781,60 @@ function bodyHTML(lines){
   });flush();return out;
 }
 
+
+/* Atividade guiada: não altera dados de usuário nem pontuação. */
+const PRACTICE_HELP={
+ l1:{goal:'Entender como pedir uma explicação à IA e aplicá-la a um negócio.',
+ fields:[['negocio','Tipo de negócio','Ex.: cafeteria de bairro','cafeteria de bairro'],['publico','Para quem explicar?','Ex.: dono que nunca usou IA','dono que nunca usou IA']],
+ template:v=>`Explique para ${v.publico}, responsável por uma ${v.negocio}, em 5 frases simples, o que é IA generativa e como ela pode ajudar no marketing. Depois liste 3 tarefas concretas que essa pessoa pode pedir à IA hoje. Use exemplos fáceis de entender, sem termos técnicos.`
+ },
+ l4:{goal:'Montar um prompt usando Papel, Contexto, Tarefa, Formato e Restrições.',
+ fields:[['papel','Papel: quem a IA deve representar?','Ex.: especialista em redes sociais','especialista em redes sociais'],['contexto','Contexto: o que a IA precisa saber?','Ex.: cafeteria que atende moradores do bairro','cafeteria que atende moradores do bairro'],['tarefa','Tarefa: o que você quer que ela faça?','Ex.: criar ideias de posts para Instagram','criar 3 ideias de posts para Instagram'],['formato','Formato: como entregar a resposta?','Ex.: lista com título e legenda curta','lista com título e legenda curta'],['restricoes','Restrições: o que evitar?','Ex.: não usar palavras difíceis','não usar palavras difíceis']],
+ template:v=>`Papel: você é ${v.papel}.\nContexto: ${v.contexto}.\nTarefa: ${v.tarefa}.\nFormato: ${v.formato}.\nRestrições: ${v.restricoes}.`
+ }
+};
+function practiceData(les){
+ if(PRACTICE_HELP[les.id])return PRACTICE_HELP[les.id];
+ const raw=les.practice;
+ const slots=[...new Set([...raw.matchAll(/\[([^\]\n]+)\]/g)].map(m=>m[1]))];
+ if(slots.length){
+  const fields=slots.map((s,i)=>['slot'+i,s.charAt(0).toUpperCase()+s.slice(1),`Preencha: ${s}`,'']);
+  return {goal:'Personalize os trechos indicados antes de enviar o pedido à IA.',fields,
+   template:v=>{let t=raw;slots.forEach((s,i)=>{t=t.split('['+s+']').join(v['slot'+i]||'['+s+']')});return t;}};
+ }
+ return {goal:'Use este exemplo pronto para observar como uma IA responde e depois faça um ajuste.',fields:[],
+ template:()=>raw};
+}
+function practiceEsc(s){return esc(String(s)).replace(/"/g,'&quot;')}
+function practiceHTML(les){
+ const d=practiceData(les);
+ const steps=[['Entenda o objetivo',d.goal],['Personalize o pedido',d.fields.length?'Preencha os campos abaixo. Os exemplos são apenas sugestões; você pode usar seu próprio negócio.':'Este exemplo já está preenchido. Leia o texto e identifique qual tarefa a IA vai realizar.'],['Copie e teste','Clique em “Copiar meu prompt”, abra ChatGPT, Claude ou Gemini, cole na conversa e envie.'],['Avalie e melhore','Leia a resposta. Peça uma alteração, como “explique com palavras mais simples” ou “dê um exemplo mais prático”.']];
+ return `<section class="box practice-guide" aria-label="Atividade prática guiada">
+ <span class="eyebrow">Na prática · passo a passo</span><h3>Agora é sua vez: teste um prompt</h3>
+ <p style="color:var(--muted);margin:0">Um <b>prompt</b> é o pedido que você escreve para uma inteligência artificial. Você não precisa saber programar.</p>
+ <div class="practice-steps">${steps.map((s,i)=>`<div class="practice-step"><span class="practice-number">${i+1}</span><div><b>${s[0]}</b><small>${s[1]}</small></div></div>`).join('')}</div>
+ <details class="practice-explain"><summary>O que forma um bom prompt? Entenda as 5 partes</summary>
+ <p><b>Papel:</b> diz que tipo de ajuda a IA deve oferecer (ex.: professor ou social media).</p>
+ <p><b>Contexto:</b> explica a situação, o negócio e o público.</p>
+ <p><b>Tarefa:</b> descreve o que você quer que seja feito.</p>
+ <p><b>Formato:</b> explica como quer receber a resposta (lista, tabela, texto curto).</p>
+ <p><b>Restrições:</b> indica limites e cuidados (sem termos difíceis, sem inventar dados).</p>
+ <small>Nem todo pedido precisa ter as cinco partes. Comece simples e acrescente detalhes conforme necessário.</small></details>
+ ${d.fields.length?`<div class="practice-fields">${d.fields.map(([key,label,hint,example])=>`<div class="practice-field"><label for="pf-${key}">${practiceEsc(label)}</label><input id="pf-${key}" data-practice-field="${practiceEsc(key)}" placeholder="${practiceEsc(hint)}" value="${practiceEsc(example)}"><small>${practiceEsc(hint)}</small></div>`).join('')}</div>`:''}
+ <div class="eyebrow">Seu prompt personalizado</div><div class="prompt" id="pr" aria-live="polite">${esc(d.template(Object.fromEntries(d.fields.map(f=>[f[0],f[3]]))))}</div>
+ <div class="row"><button class="btn pink sm" data-copy="pr">${svg('copy','width="16" height="16"')} Copiar meu prompt</button><span style="font-size:13px;color:var(--muted)">Você pode editar os campos acima antes de copiar.</span></div>
+ <div class="practice-feedback"><strong>Depois de testar:</strong> a resposta foi útil? O que faltou? Experimente pedir um exemplo mais específico e compare as duas respostas.</div>
+ <label class="practice-check"><input type="checkbox" id="practiceTried"> Já testei o prompt e tentei melhorar a resposta.</label>
+ <small style="color:var(--muted)">O quiz da aula continua sendo obrigatório para concluí-la. Esta reflexão ajuda você a aprender fazendo.</small>
+ </section>`;
+}
+function updatePracticePrompt(){
+ const x=ALL.find(a=>a.les.id===ui.lesson);if(!x)return;
+ const d=practiceData(x.les),values={};
+ document.querySelectorAll('[data-practice-field]').forEach(el=>values[el.dataset.practiceField]=el.value.trim());
+ const output=document.getElementById('pr');if(output)output.textContent=d.template(values);
+}
+
 function vLesson(){
   const x=ALL.find(a=>a.les.id===ui.lesson);if(!x){ui.lesson=null;return vTrilha()}
   const {L,M,les}=x;const idx=ALL.indexOf(x);const done=S.done[les.id];
@@ -771,10 +846,7 @@ function vLesson(){
       <div><div class="crumb"><button class="btn ghost sm" data-back>← Trilha</button><span class="chip">${L.name}</span><span class="chip p">${M.title}</span><span class="chip">${les.min} min</span></div>
       <h1>${les.title}</h1></div>
       <div class="content">${bodyHTML(les.body)}</div>
-      <section class="box"><span class="eyebrow">Na prática · copie e use no ChatGPT, Claude ou Gemini</span><h3>Seu prompt desta aula</h3>
-        <div class="prompt" id="pr">${esc(les.practice)}</div>
-        <div class="row"><button class="btn pink sm" data-copy="pr">${svg('copy','width="16" height="16"')} Copiar prompt</button><span style="font-size:13px;color:var(--muted)">Troque o que está entre [colchetes] pelo seu caso.</span></div>
-      </section>
+      ${practiceHTML(les)}
       <section class="box"><span class="eyebrow">Quiz · +25 XP se acertar de primeira</span><h3>${q.q}</h3>
         <div class="opts">${q.o.map((o,i)=>{let c='';if(st){if(i===q.a&&st.pick===q.a)c='right';else if(i===st.pick)c='wrong'}
           return `<button class="opt ${c}" data-ans="${i}" ${st&&st.pick===q.a?'disabled':''}>${o}</button>`}).join('')}</div>
@@ -906,7 +978,7 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('click',e=>{if(e.target.id==='ov')document.getElementById('modal').innerHTML=''});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('modal').innerHTML=''});
-document.addEventListener('input',e=>{const f=e.target.dataset&&e.target.dataset.f;if(!f)return;labVals[f]=e.target.value;const o=document.getElementById('labOut');if(o)o.textContent=TPL[ui.tpl].build(labVals)});
+document.addEventListener('input',e=>{if(e.target.matches('[data-practice-field]'))updatePracticePrompt();const f=e.target.dataset&&e.target.dataset.f;if(!f)return;labVals[f]=e.target.value;const o=document.getElementById('labOut');if(o)o.textContent=TPL[ui.tpl].build(labVals)});
 document.addEventListener('change',e=>{
   const f=e.target.dataset&&e.target.dataset.f;if(f){labVals[f]=e.target.value;const o=document.getElementById('labOut');if(o)o.textContent=TPL[ui.tpl].build(labVals)}});
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='nm')document.getElementById('saveName').click()});
@@ -915,3 +987,4 @@ window.appReady=true;
 </script>
 
 <script type="module" src="/auth.js"></script>
+</body></html>

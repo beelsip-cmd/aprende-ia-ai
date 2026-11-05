@@ -267,7 +267,62 @@ main{min-width:0;padding-block:32px 96px;padding-left:max(16px,env(safe-area-ins
 .auth-card button{background:#ef4357;border:0;color:white;border-radius:10px;padding:12px;font-weight:700}.auth-card button.alt{background:transparent;border:1px solid #69344b}.auth-card button:disabled{opacity:.5}
 #authError{color:#ff98a6;font-size:13px;min-height:18px}#logout{margin-top:10px}
 </style>
+
+<style>
+/* V5 — tema claro/escuro: apenas apresentação, sem afetar progresso e autenticação. */
+:root[data-theme="light"]{
+  --ink:#FAF7F9;--surface:#FFFFFF;--raise:#F4EAF0;--line:#E4CFD9;
+  --text:#24141C;--muted:#664C59;--dim:#806575;
+  --pink:#A8205A;--pink-soft:rgba(168,32,90,.09);
+  --green:#C62840;--green-soft:rgba(198,40,64,.09);
+  color-scheme:light;
+}
+:root[data-theme="light"] body::before{background:var(--ink)}
+:root[data-theme="light"] .tabbar{background:rgba(250,247,249,.97)}
+:root[data-theme="light"] .rankcard{color:#fff}
+:root[data-theme="light"] .rankcard .eyebrow{color:#ffe5ee}
+:root[data-theme="light"] .rankcard .xpbar{background:rgba(255,255,255,.25)}
+:root[data-theme="light"] .rankcard .xpbar i{background:#fff}
+:root[data-theme="light"] .rankcard .stats div{background:rgba(255,255,255,.12)}
+:root[data-theme="light"] .rankcard .stats span{color:#fff}
+:root[data-theme="light"] .btn:not(.ghost){color:#fff}
+:root[data-theme="light"] .prompt{color:#7C1C45}
+:root[data-theme="light"] .opt.right{color:#A91F38}
+:root[data-theme="light"] #authGate{background:radial-gradient(circle at 75% 15%,#F7D7E4,transparent 40%),#FAF7F9;color:var(--text)}
+:root[data-theme="light"] .auth-card{background:#fff;border-color:var(--line)}
+:root[data-theme="light"] .auth-card p{color:var(--muted)}
+:root[data-theme="light"] .auth-card input{background:#fff;border-color:#CEADBE;color:var(--text)}
+:root[data-theme="light"] .auth-card button.alt{border-color:var(--line);color:var(--text)}
+:root[data-theme="light"] #authError{color:#B31F3B}
+.theme-toggle{position:fixed;right:max(14px,env(safe-area-inset-right,0px));top:calc(12px + env(safe-area-inset-top,0px));z-index:65;display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:99px;background:var(--surface);color:var(--text);box-shadow:0 4px 20px rgba(0,0,0,.12);padding:8px 13px;font-size:12px;font-weight:700}
+.theme-toggle:hover{border-color:var(--pink)}
+@media(max-width:900px){.theme-toggle{top:calc(9px + env(safe-area-inset-top,0px));right:10px;padding:7px 10px}}
+@media print{.theme-toggle{display:none!important}}
+</style>
+<script>
+(function(){
+  let selected;
+  try{selected=localStorage.getItem('aprende-ia-theme')}catch(e){}
+  const mode=selected==='light'||selected==='dark'?selected:'dark';
+  document.documentElement.setAttribute('data-theme',mode);
+  window.toggleAprendeTheme=function(){
+    const next=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',next);
+    try{localStorage.setItem('aprende-ia-theme',next)}catch(e){}
+    window.refreshAprendeThemeButton();
+  };
+  window.refreshAprendeThemeButton=function(){
+    const button=document.getElementById('themeToggle');if(!button)return;
+    const light=document.documentElement.getAttribute('data-theme')==='light';
+    button.textContent=light?'☾ Modo escuro':'☀ Modo claro';
+    button.setAttribute('aria-label',light?'Ativar modo escuro':'Ativar modo claro');
+    button.setAttribute('aria-pressed',String(light));
+    button.title=light?'Mudar para tema escuro':'Mudar para tema claro';
+  };
+})();
+</script>
 </head><body>
+<button id="themeToggle" class="theme-toggle" type="button" onclick="toggleAprendeTheme()" aria-label="Alternar modo claro e escuro">☀ Modo claro</button>
 <div id="authGate"><div class="auth-card"><div class="logo">Aprende <span class="ia">IA</span> aí</div><h1 id="authTitle">Entre na sua escola</h1><p>Aprenda IA aplicada ao marketing no seu ritmo.</p><form id="authForm" style="display:grid;gap:12px"><input id="authName" placeholder="Seu nome" autocomplete="name" style="display:none"><input id="authEmail" type="email" required placeholder="Seu e-mail" autocomplete="email"><input id="authPassword" type="password" required minlength="8" placeholder="Senha (mínimo 8 caracteres)" autocomplete="current-password"><button id="authSubmit">Entrar</button></form><div id="authError" role="status"></div><button class="alt" id="authToggle">Criar uma conta</button><button class="alt" id="authReset">Esqueci minha senha</button><small style="color:#a98695">Seu progresso será vinculado à sua conta.</small></div></div>
 <div class="app" id="studentApp" style="display:none">
   <aside class="side">
@@ -986,5 +1041,6 @@ window.addEventListener('hashchange',()=>{ui.lesson=null;ui.quiz=null;render();w
 window.appReady=true;
 </script>
 
+<script>refreshAprendeThemeButton();</script>
 <script type="module" src="/auth.js"></script>
 </body></html>

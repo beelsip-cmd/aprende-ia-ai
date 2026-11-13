@@ -1,9 +1,15 @@
-# Aprende IA aí — V5: modo claro e escuro
+# Aprende IA aí — V8 Certificado (identidade da plataforma)
 
-- Botão de alternância no canto superior direito, inclusive na tela de login.
-- Preferência salva no navegador (localStorage), sem mudar dados no Supabase.
-- O tema padrão é escuro; modo claro mantém detalhes vermelho e rosa.
-- A atualização pode ser feita substituindo SOMENTE `index.html` no GitHub.
-- Preserve os `auth.js` e `config.js` que já funcionam no seu repositório.
-- Teste login, aula, prompt, quiz e layout mobile após o deploy.
-- O modo claro/escuro não altera o banco de dados e não exige SQL.
+Atualização incremental sobre a V7 UI Premium.
+
+## Certificado
+- Fundo escuro alinhado ao tema principal do aplicativo.
+- Paleta oficial da interface: preto, rosa escuro e vermelho.
+- Marca Aprende IA aí com destaque tipográfico em IA.
+- Elementos gráficos sutis inspirados em tecnologia e inteligência artificial.
+- Nome do aluno, formação, carga horária, data e código de registro em hierarquia clara.
+- Selo de conclusão e layout responsivo.
+- Impressão isolada em A4 horizontal.
+
+## Preservado
+Conteúdo das aulas, trilhas, quizzes, XP, medalhas, login, sincronização Supabase e configurações da V7. Não requer SQL.

@@ -188,23 +188,32 @@ main{min-width:0;padding-block:32px 96px;padding-left:max(16px,env(safe-area-ins
 .certrow h3{font-size:17px}
 .certrow p{margin:2px 0 0;font-size:13px;color:var(--muted)}
 
-/* certificado */
-.overlay{position:fixed;inset:0;background:rgba(10,9,11,.86);z-index:40;display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));overflow:auto}
-.cert-wrap{width:min(860px,100%);display:flex;flex-direction:column;gap:12px}
-.cert{aspect-ratio:1.414/1;max-width:100%;background:#0E0C0F;border-radius:6px;position:relative;padding:4.5%;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;border:1px solid var(--line)}
-.cert::before{content:"";position:absolute;inset:2.2%;border:1px solid rgba(185,45,103,.65);border-radius:4px;pointer-events:none}
-.cert::after{content:"";position:absolute;width:42%;aspect-ratio:1;right:-12%;bottom:-22%;border-radius:50%;border:clamp(10px,3vw,30px) solid var(--green);opacity:.12}
-.cert .top{display:flex;justify-content:space-between;align-items:start;gap:12px;position:relative;z-index:1}
-.cert .logo{font-size:clamp(14px,2.6vw,24px)}
-.cert .kind{font-family:var(--mono);font-size:clamp(8px,1.2vw,11px);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);text-align:right}
-.cert .mid{position:relative;z-index:1;display:flex;flex-direction:column;gap:clamp(4px,1vw,10px)}
-.cert .lbl{font-size:clamp(10px,1.5vw,14px);color:var(--muted)}
-.cert .who{font-family:var(--display);font-weight:800;font-size:clamp(22px,5.4vw,52px);line-height:1;color:var(--text);overflow-wrap:anywhere}
-.cert .what{font-size:clamp(10px,1.7vw,16px);max-width:60ch}
-.cert .what b{color:var(--pink)}
-.cert .bot{display:flex;justify-content:space-between;align-items:end;gap:12px;position:relative;z-index:1;font-family:var(--mono);font-size:clamp(7px,1.1vw,11px);color:var(--muted)}
-.cert .sig{border-top:1px solid var(--muted);padding-top:6px;min-width:30%}
-.cert .seal{width:clamp(48px,10vw,96px);aspect-ratio:1;border-radius:50%;background:var(--green);color:var(--ink);display:grid;place-items:center;text-align:center;font-family:var(--display);font-weight:800;font-size:clamp(7px,1.2vw,12px);line-height:1.05;transform:rotate(-10deg)}
+/* certificado V8 — identidade visual Aprende IA aí */
+.overlay{position:fixed;inset:0;background:rgba(5,4,8,.92);backdrop-filter:blur(12px);z-index:40;display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));overflow:auto}
+.cert-wrap{width:min(1080px,100%);display:flex;flex-direction:column;gap:14px}
+.cert{--c-pink:#B92D67;--c-red:#F04455;--c-bg:#09070A;--c-surface:#171015;aspect-ratio:1.414/1;width:100%;background:var(--c-bg);color:#FFF1F5;border-radius:12px;position:relative;padding:4.6% 5.2%;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;border:1px solid rgba(185,45,103,.65);box-shadow:0 28px 90px rgba(0,0,0,.5);isolation:isolate}
+.cert:before{content:"";position:absolute;inset:12px;border:1px solid rgba(185,45,103,.28);border-radius:7px;pointer-events:none;z-index:-1}
+.cert:after{content:"AI";position:absolute;right:4%;top:2%;font-size:clamp(100px,20vw,240px);font-weight:900;letter-spacing:-.12em;line-height:1;color:rgba(185,45,103,.055);z-index:-1;pointer-events:none}
+.cert .cert-grid{position:absolute;inset:0;z-index:-2;opacity:.2;background-image:linear-gradient(rgba(185,45,103,.17) 1px,transparent 1px),linear-gradient(90deg,rgba(185,45,103,.17) 1px,transparent 1px);background-size:34px 34px;mask-image:linear-gradient(120deg,black,transparent 72%)}
+.cert .cert-glow{position:absolute;width:48%;aspect-ratio:1;right:-16%;bottom:-40%;border-radius:50%;background:radial-gradient(circle,rgba(240,68,85,.24),rgba(185,45,103,.12) 42%,transparent 70%);z-index:-1;pointer-events:none}
+.cert .accent{position:absolute;left:0;top:0;bottom:0;width:10px;background:linear-gradient(180deg,var(--c-pink),var(--c-red) 55%,#6F1E4A)}
+.cert .top{display:flex;justify-content:space-between;align-items:center;gap:16px;position:relative;z-index:1}
+.cert .brand{font-size:clamp(16px,2.5vw,27px);font-weight:850;letter-spacing:-.06em;color:#FFF1F5}.cert .brand .ia{color:#F04455}.cert .brand .ai{color:#D94B86}
+.cert .kind{font-family:var(--mono);font-size:clamp(8px,1vw,11px);font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#E8B9CB;text-align:right;border:1px solid rgba(217,45,103,.48);border-radius:7px;padding:9px 13px;background:rgba(23,16,21,.82)}
+.cert .mid{position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:clamp(5px,1vw,11px);padding:1.5% 2% 1.5% 3%;max-width:86%}
+.cert .eyebrow-cert{font-family:var(--mono);font-size:clamp(8px,1vw,11px);font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#F04455}
+.cert .headline{font-size:clamp(23px,4vw,48px);line-height:.98;font-weight:900;letter-spacing:.045em;color:#FFF1F5}
+.cert .headline span{color:#F04455}
+.cert .lbl{font-size:clamp(9px,1.1vw,13px);color:#C3A6B3;margin-top:5px}
+.cert .who{font-weight:850;font-size:clamp(25px,4.8vw,55px);line-height:1.02;letter-spacing:-.045em;color:#FFF1F5;overflow-wrap:anywhere;max-width:100%;border-bottom:2px solid #B92D67;padding-bottom:8px}
+.cert .what{font-size:clamp(9px,1.2vw,14px);line-height:1.55;color:#D9C4CE;max-width:78ch}.cert .what b{color:#F47BA5;font-weight:850}
+.cert .bot{display:grid;grid-template-columns:1fr auto auto;align-items:end;gap:20px;position:relative;z-index:1;color:#C3A6B3;font-family:var(--mono);font-size:clamp(7px,.9vw,10px)}
+.cert .sig{border-top:1px solid rgba(195,166,179,.45);padding-top:7px;min-width:0;max-width:230px;line-height:1.5}.cert .sig strong{display:block;color:#FFF1F5;font-family:var(--sans,inherit);font-size:1.05em}
+.cert .code{text-align:right;font-size:clamp(6px,.75vw,9px);letter-spacing:.04em;align-self:end;padding-bottom:3px}
+.cert .seal{justify-self:end;width:clamp(58px,8vw,92px);aspect-ratio:1;border-radius:50%;border:2px solid #D93679;outline:1px solid rgba(240,68,85,.5);outline-offset:4px;background:radial-gradient(circle,#21101B 42%,#120A10 43%);color:#FF8FB5;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-weight:900;font-size:clamp(10px,1.25vw,15px);line-height:1.05;box-shadow:inset 0 0 0 4px #09070A,inset 0 0 0 5px rgba(240,68,85,.28);transform:rotate(-8deg)}
+.cert .seal small{font-family:var(--mono);font-size:.5em;letter-spacing:.13em;margin-top:4px;color:#F04455}
+.cert-actions{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}.cert-actions .hint{font-size:13px;color:var(--muted);max-width:58ch}
+@media(max-width:600px){.cert{aspect-ratio:auto;min-height:490px;padding:34px 24px 28px;border-radius:10px}.cert:before{inset:8px}.cert .accent{width:7px}.cert .top{align-items:flex-start}.cert .kind{max-width:49%;line-height:1.45;padding:7px 9px}.cert .mid{max-width:100%;padding:34px 0;gap:12px}.cert .headline{font-size:clamp(26px,8vw,38px)}.cert .who{font-size:clamp(29px,8vw,43px)}.cert .what{font-size:13px}.cert .bot{grid-template-columns:1fr auto;gap:15px}.cert .code{grid-column:1/-1;grid-row:2;text-align:left}.cert .seal{grid-column:2;grid-row:1}.cert-actions{align-items:stretch}.cert-actions .hint{max-width:none}.cert-actions .row{width:100%}.cert-actions .row .btn{flex:1}}
 
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--ink);padding:12px 18px;border-radius:12px;font-weight:700;opacity:0;transition:.3s;z-index:50;max-width:calc(100% - 32px);text-align:center;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -238,7 +247,7 @@ main{min-width:0;padding-block:32px 96px;padding-left:max(16px,env(safe-area-ins
  #modal,.overlay{position:static!important;display:block!important;overflow:visible!important;background:transparent!important;padding:0!important}
  .cert-wrap{width:100%!important;max-width:none!important;display:block!important}
  .cert{width:100%!important;max-width:none!important;aspect-ratio:1.414/1!important;break-inside:avoid!important}
- .cert-wrap>.row,.cert-wrap>.tip{display:none!important}
+ .cert-wrap>.cert-actions,.cert-wrap>.tip{display:none!important}
 }
 
 .practice-guide{display:grid;gap:13px}
@@ -258,6 +267,140 @@ main{min-width:0;padding-block:32px 96px;padding-left:max(16px,env(safe-area-ins
 .practice-check input{margin-top:5px;accent-color:var(--pink)}
 .practice-feedback{background:var(--pink-soft);border:1px solid var(--line);border-radius:10px;padding:12px}
 .practice-feedback strong{color:var(--text)}
+
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.skip-link{position:fixed;left:12px;top:8px;z-index:100;transform:translateY(-150%);background:var(--surface);color:var(--text);padding:10px 14px;border-radius:9px;border:1px solid var(--line)}.skip-link:focus{transform:translateY(0)}
+/* V6 UX: hierarquia, legibilidade, navegação, acessibilidade e responsividade */
+:root{--content-max:1160px;--focus:var(--green)}
+html{scroll-behavior:smooth;scroll-padding-top:22px}
+body{line-height:1.6;overflow-x:hidden}
+button,a,input,select,textarea{ -webkit-tap-highlight-color:transparent }
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+main{padding-top:28px}
+.wrap{max-width:var(--content-max);gap:28px}
+.sec-h{align-items:center}
+.sec-h h2{font-size:clamp(21px,2.6vw,28px)}
+.hello{min-height:300px;justify-content:center;padding:clamp(22px,3vw,34px)}
+.hello p{font-size:15px;line-height:1.7}
+.rankcard{min-height:300px;box-shadow:0 12px 34px rgba(0,0,0,.12)}
+.next{border-width:1px;padding:22px 24px}
+.next .t{min-width:220px}
+.btn{min-height:44px;justify-content:center;transition:transform .16s ease,filter .16s ease,box-shadow .16s ease}
+.btn:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 5px 16px rgba(0,0,0,.16)}
+.btn.sm{min-height:38px}
+.lv{min-height:250px;transition:border-color .18s,transform .18s,box-shadow .18s}
+.lv:hover:not(.locked){transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,.12)}
+.lv.locked{opacity:.72;cursor:not-allowed}
+.lv.locked:after{content:'Conclua o nível anterior para desbloquear';font-size:12px;color:var(--muted);margin-top:2px}
+.lv .meta{gap:8px;flex-wrap:wrap}
+.tabs{position:sticky;top:8px;z-index:10;padding:8px;background:color-mix(in srgb,var(--ink) 88%,transparent);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:14px}
+.tabs button{min-height:42px}
+.tabs button:focus-visible{outline-offset:1px}
+.mod{scroll-margin-top:80px}
+.mod-h{padding:20px}
+.lessons button{min-height:54px}
+.lessons button:disabled{opacity:.55}
+.lesson{grid-template-columns:minmax(0,1fr) 280px;gap:32px}
+.lesson h1{max-width:22ch;line-height:1.08}
+.content{max-width:72ch;line-height:1.75}
+.content p,.content li{line-height:1.75}
+.content li{padding-block:2px}
+.aside .box{max-height:calc(100vh - 48px);overflow:auto}
+.mini button{min-height:42px;line-height:1.35}
+.box{padding:clamp(16px,2vw,22px)}
+.practice-guide{gap:16px}
+.practice-fields{grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
+.practice-field input,.practice-field textarea,.field input,.field select,.field textarea{min-height:46px}
+.practice-field small,.field small{line-height:1.45}
+.prompt{font-size:13px;line-height:1.75;user-select:text}
+.opts{gap:10px}
+.opt{min-height:50px;line-height:1.45}
+.feedback{padding:12px;border-radius:10px;background:var(--raise);line-height:1.6}
+.lab{gap:16px}
+.lab>.box:last-child{top:16px!important}
+.field label{line-height:1.4}
+.rescard{min-height:190px}
+.rescard a{display:inline-flex;align-items:center;min-height:42px}
+.badge{min-height:190px}
+.toast{bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:80}
+.tabbar{box-shadow:0 -8px 28px rgba(0,0,0,.12)}
+.tabbar a{flex:1;min-width:0;min-height:54px;justify-content:center}
+.tabbar a.on{background:var(--pink-soft)}
+.tabbar a span{font-size:11px}
+.theme-toggle{min-height:40px}
+#view{min-width:0}
+#view>*{min-width:0}
+/* Barra de leitura da aula */
+.read-progress{position:fixed;left:0;right:0;top:0;height:3px;background:var(--line);z-index:70;pointer-events:none}
+.read-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--green));transition:width .1s linear}
+/* Pesquisa da trilha */
+.trail-tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.trail-search{position:relative;flex:1 1 260px;max-width:440px}
+.trail-search input{width:100%;min-height:46px;padding:10px 14px 10px 42px;border-radius:11px;border:1px solid var(--line);background:var(--surface);color:var(--text);font:inherit}
+.trail-search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--muted)}
+.search-empty{padding:20px;border:1px dashed var(--line);border-radius:12px;color:var(--muted);text-align:center}
+/* Melhor legibilidade nos dois temas */
+:root[data-theme="light"] .tabs{background:rgba(250,247,249,.92)}
+:root[data-theme="light"] .tabbar{box-shadow:0 -8px 28px rgba(40,10,25,.08)}
+:root[data-theme="light"] .read-progress{background:#eadde4}
+:root[data-theme="light"] .rankcard{box-shadow:0 12px 34px rgba(120,25,65,.12)}
+@media(max-width:900px){
+ main{padding:18px 16px calc(112px + env(safe-area-inset-bottom,0px))}
+ .wrap{gap:22px}
+ .hero{gap:12px}
+ .hello,.rankcard{min-height:unset}
+ .hello{padding:22px}
+ .rankcard{padding:20px}
+ .next{padding:18px;gap:14px}
+ .next .btn{width:100%}
+ .levels{gap:12px}
+ .lv{min-height:unset;padding:18px}
+ .lv .num{font-size:42px}
+ .lesson{grid-template-columns:1fr;gap:20px}
+ .lesson>div:first-child{gap:20px!important}
+ .aside{order:2}
+ .aside .box{max-height:none}
+ .aside .mini{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+ .tabs{top:0;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}
+ .tabs::-webkit-scrollbar{display:none}
+ .tabs button{white-space:nowrap;flex:none}
+ .lab{grid-template-columns:1fr}
+ .lab>.box:last-child{position:static!important}
+ .plan{gap:10px}
+ .res{grid-template-columns:1fr 1fr}
+ .badges{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:560px){
+ main{padding-left:13px;padding-right:13px}
+ .wrap{gap:19px}
+ .hello h1{font-size:32px}
+ .rankcard .rank{font-size:29px}
+ .stats{gap:6px}
+ .stats div{padding:9px 7px}
+ .stats b{font-size:19px}
+ .stats span{font-size:11px}
+ .lvhead h1{font-size:34px}
+ .mod-h{padding:14px}
+ .lessons button{grid-template-columns:26px minmax(0,1fr) auto;gap:8px;padding:10px}
+ .lessons button>span:nth-child(2){font-size:14px;line-height:1.35}
+ .content{font-size:15.5px}
+ .practice-steps{gap:7px}
+ .practice-step{padding:10px}
+ .practice-fields{grid-template-columns:1fr}
+ .row>.btn{max-width:100%}
+ .res{grid-template-columns:1fr}
+ .plan{grid-template-columns:1fr 1fr}
+ .badge{padding:14px 10px;min-height:165px}
+ .certrow{padding:14px}
+ .tabbar{padding-left:5px;padding-right:5px}
+ .tabbar a{padding:6px 3px;gap:3px}
+ .tabbar a svg{width:20px;height:20px}
+ .tabbar a span{font-size:10px}
+ .theme-toggle{top:calc(8px + env(safe-area-inset-top,0px));right:8px;font-size:11px}
+ .mobilelogo{margin:3px 0 0}
+}
+@media(max-width:360px){.tabbar a span{font-size:9px}.plan{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 
 <style>
@@ -321,7 +464,100 @@ main{min-width:0;padding-block:32px 96px;padding-left:max(16px,env(safe-area-ins
   };
 })();
 </script>
+
+<style>
+/* V7 UI PREMIUM — refinamento visual, sem alterar autenticação, conteúdo ou progresso */
+:root{--r:18px;--shadow-soft:0 14px 42px rgba(0,0,0,.16);--shadow-card:0 8px 28px rgba(0,0,0,.12);--pink-glow:0 12px 34px rgba(185,45,103,.12)}
+body{background:radial-gradient(ellipse at 82% -12%,rgba(185,45,103,.11),transparent 34%),var(--ink)}
+.app{grid-template-columns:264px minmax(0,1fr)}
+.side{padding:30px 18px;gap:34px;background:color-mix(in srgb,var(--ink) 94%,var(--pink));border-right-color:color-mix(in srgb,var(--line) 76%,transparent)}
+.side>.logo{padding:0 10px;font-size:26px}
+.nav{gap:6px}
+.nav a{min-height:48px;padding:12px 14px;border:1px solid transparent;border-radius:13px;transition:background .18s,border-color .18s,color .18s,transform .18s}
+.nav a:hover{transform:translateX(2px);border-color:var(--line)}
+.nav a.on{background:linear-gradient(110deg,var(--pink-soft),transparent);border-color:color-mix(in srgb,var(--pink) 30%,var(--line));box-shadow:inset 3px 0 0 var(--pink)}
+.side .me{padding:18px 10px 0}
+main{padding:38px clamp(22px,4vw,58px) 100px}
+.wrap{max-width:1180px;gap:34px}
+.mobilelogo{font-size:25px}
+.eyebrow{letter-spacing:.13em;font-size:10px}
+.hello,.rankcard,.next,.lv,.mod,.box,.rescard,.certrow,.badge{border-radius:20px}
+.hello{background:linear-gradient(135deg,var(--surface),color-mix(in srgb,var(--surface) 84%,var(--pink)));box-shadow:var(--shadow-card);border-color:color-mix(in srgb,var(--line) 78%,var(--pink));min-height:320px}
+.hello h1{letter-spacing:-.035em;max-width:17ch}
+.hello h1 em{background:linear-gradient(110deg,var(--pink),var(--green));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hello p{max-width:58ch}
+.rankcard{background:linear-gradient(145deg,var(--pink),color-mix(in srgb,var(--pink) 76%,#6D123B));color:#fff7fa;box-shadow:var(--pink-glow);border:1px solid rgba(255,255,255,.12)}
+.rankcard .eyebrow{color:rgba(255,255,255,.72)}
+.rankcard .xpbar{background:rgba(20,5,13,.25)}.rankcard .xpbar i{background:#fff}
+.rankcard .stats div{background:rgba(20,5,13,.16);border:1px solid rgba(255,255,255,.12)}
+.next{background:linear-gradient(110deg,var(--green-soft),color-mix(in srgb,var(--surface) 78%,var(--green)));border-color:color-mix(in srgb,var(--green) 60%,var(--line));box-shadow:var(--shadow-card)}
+.next h3{letter-spacing:-.02em}
+.btn{box-shadow:0 4px 12px rgba(0,0,0,.08);letter-spacing:-.01em}
+.btn:not(.ghost){background:linear-gradient(110deg,var(--green),color-mix(in srgb,var(--green) 78%,#ffb0b7))}
+.btn.pink{background:linear-gradient(110deg,var(--pink),color-mix(in srgb,var(--pink) 75%,#ff8db5));color:white}
+.btn.ghost{background:var(--surface);border-color:var(--line)}
+.levels{gap:18px}
+.lv{padding:24px;background:linear-gradient(145deg,var(--surface),color-mix(in srgb,var(--surface) 92%,var(--pink)));box-shadow:var(--shadow-card);border-color:var(--line)}
+.lv.cur{border-color:color-mix(in srgb,var(--pink) 65%,var(--line));box-shadow:var(--pink-glow)}
+.lv.done{border-color:color-mix(in srgb,var(--green) 60%,var(--line))}
+.lv h3{letter-spacing:-.02em}
+.lv .num{font-size:62px}
+.tabs{border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.tabs button{border-radius:11px;padding-inline:18px}
+.tabs button.on{background:var(--pink);border-color:var(--pink);color:white;box-shadow:0 4px 14px rgba(185,45,103,.2)}
+.mod{box-shadow:var(--shadow-card);border-color:color-mix(in srgb,var(--line) 84%,var(--pink));}
+.mod-h{background:linear-gradient(100deg,color-mix(in srgb,var(--surface) 90%,var(--pink)),var(--surface))}
+.mod-h .ico{border:1px solid var(--line);border-radius:14px}
+.lessons{padding:9px}
+.lessons button{border-radius:12px;padding:13px 14px;transition:background .15s,transform .15s}
+.lessons button:hover:not(:disabled){transform:translateX(2px)}
+.lesson{gap:38px}
+.lesson>div:first-child{gap:28px!important}
+.lesson h1{letter-spacing:-.035em}
+.crumb .btn{box-shadow:none}
+.content{font-size:17px;line-height:1.82}
+.content p,.content li{line-height:1.82}
+.tip{border-radius:0 14px 14px 0;padding:17px 19px}
+.ex,.prompt{border-radius:14px}
+.box{box-shadow:var(--shadow-card);border-color:var(--line)}
+.aside .box{box-shadow:none;background:color-mix(in srgb,var(--surface) 92%,var(--pink))}
+.opt{border-radius:13px;padding:14px 16px}
+.opt:hover:not(:disabled){border-color:var(--pink);background:var(--pink-soft)}
+.field input,.field select,.field textarea,.practice-field input,.practice-field textarea,.trail-search input{border-radius:13px}
+.rescard{padding:22px;background:linear-gradient(145deg,var(--surface),color-mix(in srgb,var(--surface) 94%,var(--pink)));box-shadow:var(--shadow-card)}
+.rescard a{font-weight:700;text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--green) 60%,transparent)}
+.badge{border-radius:18px;background:var(--surface);box-shadow:var(--shadow-card)}
+.badge.got{border-color:color-mix(in srgb,var(--green) 58%,var(--line));background:linear-gradient(145deg,var(--surface),var(--green-soft))}
+.certrow{padding:18px 20px;box-shadow:var(--shadow-card)}
+.toast{border-radius:14px;box-shadow:var(--shadow-soft);backdrop-filter:blur(16px)}
+#authGate{position:relative;isolation:isolate;overflow:hidden;background:radial-gradient(ellipse at 20% 15%,rgba(185,45,103,.30),transparent 40%),radial-gradient(ellipse at 90% 85%,rgba(240,68,85,.14),transparent 38%),#09070a}
+#authGate:before{content:"";position:absolute;inset:0;z-index:-1;opacity:.18;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(to bottom,black,transparent 85%)}
+.auth-card{width:min(460px,100%);padding:clamp(25px,5vw,42px);gap:17px;border-radius:24px;background:rgba(25,16,21,.92);border-color:#613047;box-shadow:0 30px 90px rgba(0,0,0,.4);backdrop-filter:blur(18px)}
+.auth-card>.logo{font-size:29px;margin-bottom:6px}
+.auth-card h1{font-size:clamp(30px,5vw,38px);letter-spacing:-.035em}
+.auth-card p{line-height:1.65}
+.auth-card input{min-height:50px;padding:14px 15px;border-radius:12px;transition:border-color .15s,box-shadow .15s}
+.auth-card input:focus{border-color:#d64b82;box-shadow:0 0 0 3px rgba(185,45,103,.18);outline:0}
+.auth-card button{min-height:48px;border-radius:12px;transition:transform .15s,filter .15s}
+.auth-card button:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.theme-toggle{backdrop-filter:blur(14px);box-shadow:0 8px 28px rgba(0,0,0,.18)}
+:root[data-theme="light"] body{background:radial-gradient(ellipse at 82% -12%,rgba(185,45,103,.08),transparent 34%),var(--ink)}
+:root[data-theme="light"] .side{background:rgba(250,247,249,.94)}
+:root[data-theme="light"] .rankcard{background:linear-gradient(145deg,#B92D67,#8D1D4D);color:white}
+:root[data-theme="light"] .rankcard .xpbar i{background:white}
+:root[data-theme="light"] .hello{background:linear-gradient(135deg,#fff,#fff5f8)}
+:root[data-theme="light"] .lv{background:linear-gradient(145deg,#fff,#fff9fb)}
+:root[data-theme="light"] .mod-h{background:linear-gradient(100deg,#fff5f8,#fff)}
+:root[data-theme="light"] .rescard{background:linear-gradient(145deg,#fff,#fff8fb)}
+:root[data-theme="light"] .badge.got{background:linear-gradient(145deg,#fff,#fff2f5)}
+:root[data-theme="light"] .tabbar{background:rgba(255,255,255,.94)}
+@media(max-width:1100px){.app{grid-template-columns:238px minmax(0,1fr)}main{padding-inline:28px}.wrap{gap:28px}}
+@media(max-width:900px){.app{grid-template-columns:1fr}.side{display:none}main{padding:24px 20px calc(116px + env(safe-area-inset-bottom,0px))}.wrap{gap:24px}.hero{grid-template-columns:1.15fr .85fr}.hello{min-height:270px}.rankcard{min-height:270px}.tabbar{background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(18px);border-top-color:var(--line)}.tabbar a{border-radius:12px}}
+@media(max-width:640px){main{padding:20px 15px calc(112px + env(safe-area-inset-bottom,0px))}.hero,.levels{grid-template-columns:1fr}.hello{min-height:unset;padding:24px}.hello h1{max-width:unset}.rankcard{min-height:unset}.rankcard .stats{margin-top:6px}.next{padding:18px}.next .btn{width:100%}.lv{min-height:unset}.lv .num{font-size:48px}.lesson{gap:22px}.content{font-size:16px}.mod-h{gap:12px}.mod-h .ico{width:40px;height:40px}.certrow{align-items:flex-start}.auth-card{padding:25px 21px}.theme-toggle{font-size:10px;padding:7px 9px}}
+@media(prefers-reduced-motion:reduce){.nav a,.btn,.lv,.lessons button,.auth-card button{transition:none!important}}
+</style>
 </head><body>
+<a class="skip-link" href="#view">Pular para o conteúdo</a><div class="read-progress" aria-hidden="true"><i id="readProgressBar"></i></div>
 <button id="themeToggle" class="theme-toggle" type="button" onclick="toggleAprendeTheme()" aria-label="Alternar modo claro e escuro">☀ Modo claro</button>
 <div id="authGate"><div class="auth-card"><div class="logo">Aprende <span class="ia">IA</span> aí</div><h1 id="authTitle">Entre na sua escola</h1><p>Aprenda IA aplicada ao marketing no seu ritmo.</p><form id="authForm" style="display:grid;gap:12px"><input id="authName" placeholder="Seu nome" autocomplete="name" style="display:none"><input id="authEmail" type="email" required placeholder="Seu e-mail" autocomplete="email"><input id="authPassword" type="password" required minlength="8" placeholder="Senha (mínimo 8 caracteres)" autocomplete="current-password"><button id="authSubmit">Entrar</button></form><div id="authError" role="status"></div><button class="alt" id="authToggle">Criar uma conta</button><button class="alt" id="authReset">Esqueci minha senha</button><small style="color:#a98695">Seu progresso será vinculado à sua conta.</small></div></div>
 <div class="app" id="studentApp" style="display:none">
@@ -330,7 +566,7 @@ main{min-width:0;padding-block:32px 96px;padding-left:max(16px,env(safe-area-ins
     <nav class="nav" id="nav"></nav>
     <div class="me" id="sideMe"></div>
   </aside>
-  <main><div class="wrap" id="view"></div></main>
+  <main id="mainContent"><div class="wrap" id="view" tabindex="-1"></div></main>
 </div>
 <nav class="tabbar" id="tabbar" style="display:none"></nav>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -763,7 +999,7 @@ const NAV=[['inicio','Início','home'],['trilha','Trilha','path'],['lab','Labora
 function route(){const h=location.hash.slice(1);return NAV.some(n=>n[0]===h)?h:'inicio'}
 function renderNav(){
   const r=ui.lesson?'trilha':route();
-  const html=NAV.map(([id,t,ic])=>`<a href="#${id}" class="${r===id?'on':''}" data-nav="${id}">${svg(ic)}<span>${t}</span></a>`).join('');
+  const html=NAV.map(([id,t,ic])=>`<a href="#${id}" class="${r===id?'on':''}" data-nav="${id}" aria-current="${r===id?'page':'false'}">${svg(ic)}<span>${t}</span></a>`).join('');
   document.getElementById('nav').innerHTML=html;
   document.getElementById('tabbar').innerHTML=html;
   const {r:rk,n}=rank();const pct=n?Math.min(100,(S.xp-rk[0])/(n[0]-rk[0])*100):100;
@@ -815,11 +1051,12 @@ function vTrilha(){
   <div class="lvhead"><div><span class="eyebrow">Nível ${L.num} · ${L.tagline} · ${L.hours}h</span><h1>${L.name}</h1><p>${L.desc}</p></div>
    <div style="text-align:right"><span class="mono" style="font-size:28px;font-weight:600">${d}/${t}</span><div class="eyebrow">aulas concluídas</div></div></div>
   ${!un?`<div class="tip" style="max-width:none">Conclua todas as aulas do nível anterior para liberar este nível e o certificado dele.</div>`:''}
-  <div class="mods">${L.modules.map(M=>{const md=modDone(M);
-    return `<article class="mod ${md?'complete':''}">
+  <div class="trail-tools"><label class="trail-search"><span class="sr-only">Buscar aula</span>${svg('target')}<input id="trailSearch" type="search" placeholder="Buscar uma aula ou assunto…" autocomplete="off"></label><span class="eyebrow">Busca neste nível · ${L.modules.reduce((a,m)=>a+m.lessons.length,0)} aulas</span></div>
+  <div class="mods" id="trailModules">${L.modules.map(M=>{const md=modDone(M);
+    return `<article class="mod ${md?'complete':''}" data-module-search="${esc(M.title+' '+M.lessons.map(x=>x.title).join(' '))}">
       <div class="mod-h"><div class="ico">${svg(M.icon)}</div><div class="t"><h3>${M.title}</h3><div class="sub">${M.lessons.length} aulas · recompensa: medalha <b>${M.badge}</b> + 100 XP</div></div>${md?'<span class="chip g">Medalha conquistada</span>':''}</div>
       <ol class="lessons">${M.lessons.map(l=>{const ok=!!S.done[l.id];const can=un&&(prevDone);prevDone=ok;
-        return `<li><button data-open="${l.id}" ${can?'':'disabled'}><span class="dot ${ok?'ok':''}">${ok?svg('check'):(!can?svg('lock','width="12" height="12" style="stroke:var(--dim)"'):'')}</span><span>${l.title}</span><span class="min">${l.min} min</span></button></li>`}).join('')}</ol>
+        return `<li data-lesson-search="${esc(l.title)}"><button data-open="${l.id}" ${can?'':'disabled'}><span class="dot ${ok?'ok':''}">${ok?svg('check'):(!can?svg('lock','width="12" height="12" style="stroke:var(--dim)"'):'')}</span><span>${l.title}</span><span class="min">${l.min} min</span></button></li>`}).join('')}</ol>
     </article>`}).join('')}</div>
   ${lvDone(L)?`<div class="next"><div class="t"><span class="eyebrow">Nível concluído</span><h3>Certificado: ${L.cert}</h3></div><button class="btn" data-cert="${L.id}">Ver certificado</button></div>`:''}`;
 }
@@ -899,10 +1136,10 @@ function vLesson(){
   <div class="lesson">
     <div style="display:flex;flex-direction:column;gap:24px;min-width:0">
       <div><div class="crumb"><button class="btn ghost sm" data-back>← Trilha</button><span class="chip">${L.name}</span><span class="chip p">${M.title}</span><span class="chip">${les.min} min</span></div>
-      <h1>${les.title}</h1></div>
+      <div class="lesson-meta"><span class="eyebrow">Aula ${idx+1} de ${ALL.length}</span><span class="eyebrow">${Object.keys(S.done).length} concluídas</span></div><h1>${les.title}</h1></div>
       <div class="content">${bodyHTML(les.body)}</div>
       ${practiceHTML(les)}
-      <section class="box"><span class="eyebrow">Quiz · +25 XP se acertar de primeira</span><h3>${q.q}</h3>
+      <section class="box"><span class="eyebrow">Etapa final · verifique o que aprendeu</span><h3>${q.q}</h3><p style="margin:0;color:var(--muted);font-size:14px">Escolha uma resposta. Se errar, você pode tentar novamente; a aula só é concluída depois do acerto.</p>
         <div class="opts">${q.o.map((o,i)=>{let c='';if(st){if(i===q.a&&st.pick===q.a)c='right';else if(i===st.pick)c='wrong'}
           return `<button class="opt ${c}" data-ans="${i}" ${st&&st.pick===q.a?'disabled':''}>${o}</button>`}).join('')}</div>
         ${st?`<div class="feedback">${st.pick===q.a?'<b style="color:var(--green)">Certo.</b> ':'<b style="color:var(--pink)">Ainda não.</b> Tente outra opção. '}${st.pick===q.a?q.e:''}</div>`:''}
@@ -914,7 +1151,7 @@ function vLesson(){
     </div>
     <aside class="aside">
       <div class="box"><span class="eyebrow">${M.title}</span>
-        <ul class="mini">${M.lessons.map(l=>`<li><button class="${l.id===les.id?'on':''}" data-open="${l.id}"><span class="d ${S.done[l.id]?'ok':''}"></span>${l.title}</button></li>`).join('')}</ul></div>
+        <ul class="mini">${M.lessons.map((l,j)=>{const prior=M.lessons.slice(0,j).every(z=>S.done[z.id]);const allowed=prior||S.done[l.id]||l.id===les.id;return `<li><button class="${l.id===les.id?'on':''}" data-open="${l.id}" ${allowed?'':'disabled'} aria-current="${l.id===les.id?'step':'false'}"><span class="d ${S.done[l.id]?'ok':''}"></span>${l.title}${allowed?'':' · bloqueada'}</button></li>`}).join('')}</ul></div>
       <div class="box"><span class="eyebrow">Recompensa do módulo</span><div class="row"><div class="medal" style="width:44px;height:44px">${svg('trophy','style="stroke:var(--pink)"')}</div><div><b>${M.badge}</b><div style="font-size:13px;color:var(--muted)">+100 XP ao concluir as ${M.lessons.length} aulas</div></div></div></div>
     </aside>
   </div>`;
@@ -986,22 +1223,25 @@ function openCert(id){
   document.getElementById('modal').innerHTML=`<div class="overlay" id="ov" role="dialog" aria-modal="true" aria-label="Certificado">
    <div class="cert-wrap">
     ${ok?'':'<div class="tip" style="max-width:none">Prévia. O certificado é liberado quando você concluir todas as aulas do nível.</div>'}
-    <div class="cert" style="${ok?'':'filter:grayscale(.7);opacity:.75'}">
-      <div class="top"><div class="logo">Aprende <span class="ia">IA</span> <span class="ai">aí</span></div><div class="kind">Certificado de conclusão<br>${id==='final'?'Formação completa':'Nível '+L.num}</div></div>
-      <div class="mid"><span class="lbl">Certificamos que</span><div class="who">${esc(S.name||'Seu nome aqui')}</div>
-        <div class="what">concluiu <b>${title}</b>, com carga horária de ${hours} horas, cobrindo ${scope}.</div></div>
-      <div class="bot"><div class="sig">Coordenação Aprende IA aí<br>${date}</div><div>Código ${certCode(id)}</div><div class="seal">${hours}h<br>CERTI<br>FICADO</div></div>
+    <div class="cert" style="${ok?'':'filter:grayscale(.7);opacity:.78'}">
+      <span class="cert-grid" aria-hidden="true"></span><span class="cert-glow" aria-hidden="true"></span><span class="accent" aria-hidden="true"></span>
+      <div class="top"><div class="brand">Aprende <span class="ia">IA</span> <span class="ai">aí</span></div><div class="kind">Certificado de conclusão<br>${id==='final'?'Formação completa':'Nível '+L.num}</div></div>
+      <div class="mid"><span class="eyebrow-cert">Aprendizado aplicado · inteligência artificial</span><div class="headline">CERTIFICADO <span>DE CONCLUSÃO</span></div><span class="lbl">Este certificado é concedido a</span><div class="who">${esc(S.name||'Seu nome aqui')}</div>
+        <div class="what">pela conclusão de <b>${title}</b>, com carga horária de <b>${hours} horas</b>, abrangendo ${scope}.</div></div>
+      <div class="bot"><div class="sig"><strong>Aprende IA aí · Coordenação</strong>${date}</div><div class="code">REGISTRO DIGITAL<br>${certCode(id)}</div><div class="seal">${hours}H<small>CONCLUÍDO</small></div></div>
     </div>
-    <div class="row" style="justify-content:space-between"><span style="font-size:13px;color:var(--muted)">${S.name?'':'Salve seu nome na tela inicial para ele aparecer aqui. '}Para salvar em PDF, use o botão Imprimir / PDF e selecione “Salvar como PDF”.</span><div class="row"><button class="btn sm" id="printCert" ${ok?"":"disabled"}>Imprimir / PDF</button><button class="btn ghost sm" id="closeCert">Fechar</button></div></div>
+    <div class="cert-actions"><span class="hint">${S.name?'':'Salve seu nome na tela inicial para ele aparecer aqui. '}Certificado em formato A4 horizontal. Use Imprimir / PDF para salvar.</span><div class="row"><button class="btn sm" id="printCert" ${ok?"":"disabled"}>Imprimir / PDF</button><button class="btn ghost sm" id="closeCert">Fechar</button></div></div>
    </div></div>`;
 }
 
+/* V8: certificado alinhado à identidade escura, tecnológica e pink/red do Aprende IA aí. */
 /* ============ RENDER ============ */
 function render(){
   const v=document.getElementById('view');const r=route();
   if(ui.lesson)v.innerHTML=vLesson();
   else v.innerHTML={inicio:vHome,trilha:vTrilha,lab:vLab,recursos:vRes,conquistas:vConq}[r]();
   renderNav();
+  requestAnimationFrame(updateReadProgress);
 }
 
 /* ============ EVENTOS ============ */
@@ -1038,6 +1278,30 @@ document.addEventListener('change',e=>{
   const f=e.target.dataset&&e.target.dataset.f;if(f){labVals[f]=e.target.value;const o=document.getElementById('labOut');if(o)o.textContent=TPL[ui.tpl].build(labVals)}});
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='nm')document.getElementById('saveName').click()});
 window.addEventListener('hashchange',()=>{ui.lesson=null;ui.quiz=null;render();window.scrollTo(0,0)});
+
+/* V6: filtros e pequenos apoios de navegação */
+function filterTrail(value){
+ const q=(value||'').trim().toLocaleLowerCase('pt-BR');let visible=0;
+ document.querySelectorAll('[data-module-search]').forEach(mod=>{
+  const title=mod.dataset.moduleSearch.toLocaleLowerCase('pt-BR');
+  let shown=0;mod.querySelectorAll('[data-lesson-search]').forEach(li=>{
+   const match=!q||li.dataset.lessonSearch.toLocaleLowerCase('pt-BR').includes(q)||title.includes(q);
+   li.hidden=!match;if(match)shown++;
+  });mod.hidden=shown===0;if(shown)visible++;
+ });
+ let empty=document.getElementById('trailEmpty');
+ if(!visible){if(!empty){empty=document.createElement('div');empty.id='trailEmpty';empty.className='search-empty';empty.textContent='Nenhuma aula encontrada. Tente outro termo.';document.getElementById('trailModules')?.after(empty)}}
+ else empty?.remove();
+}
+document.addEventListener('input',e=>{if(e.target.id==='trailSearch')filterTrail(e.target.value)});
+function updateReadProgress(){
+ const bar=document.getElementById('readProgressBar');if(!bar)return;
+ const max=document.documentElement.scrollHeight-innerHeight;
+ bar.style.width=(max>0?Math.min(100,scrollY/max*100):0)+'%';
+}
+window.addEventListener('scroll',updateReadProgress,{passive:true});
+window.addEventListener('resize',updateReadProgress); 
+
 window.appReady=true;
 </script>
 
